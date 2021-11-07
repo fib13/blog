@@ -348,7 +348,7 @@ Github Action 运行成功后，你会发现在 blog 仓库中新增了 `gh-page
 
 最后，在浏览器中输入你的博客网址来验收成果。
 
-![20211107222913](https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107222913.png)
+![20211107222913](https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107235023.png)
 
 ## 参考
 
