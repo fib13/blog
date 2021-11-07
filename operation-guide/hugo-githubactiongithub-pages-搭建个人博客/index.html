@@ -1,0 +1,379 @@
+<!doctype html><html><head>
+<meta charset=utf-8>
+<meta name=viewport content="width=device-width,initial-scale=1,shrink-to-fit=no">
+<link rel=canonical href=https://www.shisanshiji.com/operation-guide/hugo-githubactiongithub-pages-%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/>
+<title>
+Hugo&Github Action&Github Pages 搭建个人博客 | 十三时记
+</title>
+<link href=https://www.shisanshiji.comcss/fontawesome.min.css rel=stylesheet>
+<link rel=stylesheet href=https://www.shisanshiji.com/css/ace.min.css>
+</head>
+<body><nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow sticky-top" id=navbarMain>
+<div class=container>
+<div>
+<a class=navbar-brand href=/>
+十三时记
+</a>
+</div>
+<button class="navbar-toggler navbar-toggler-right collapsed" type=button data-toggle=collapse data-target=#navbarMainCollapse aria-controls=navbarMainCollapse aria-expanded=false aria-label="Toggle navigation">
+<span class=navbar-toggler-icon></span>
+</button>
+<div class="collapse navbar-collapse" id=navbarMainCollapse>
+<ul class="navbar-nav ml-auto">
+<li class=nav-item>
+<a class=nav-link href=https://github.com/jugggao target=_blank>
+<i class="fab fa-github"></i>
+</a>
+</li>
+</ul>
+</div>
+</div>
+</nav>
+<div class=container-fluid>
+<div class=row>
+<div class="docs-sidenav order-0 col-12 col-md-3 col-lg-2 col-xl-2 position-sticky border-right"><nav class="navbar navbar-expand-md navbar-light pl-0">
+<button class="navbar-toggler navbar-toggler-right collapsed" type=button data-toggle=collapse data-target=#sidenav-left-collapse aria-controls=sidenav-left-collapse aria-expanded=false aria-label="Toggle navigation">
+<span class=navbar-toggler-icon></span>
+</button>
+<div class="collapse navbar-collapse align-items-start flex-column" id=sidenav-left-collapse>
+<form class="form-inline my-2 my-lg-0 searchbox">
+<input class="form-control mr-sm-2 w-100" data-search-input id=search-by type=text placeholder=Search>
+</form>
+<ul class="navbar-nav flex-column pt-3">
+<li data-nav-id=/learn-notes/ class="nav-item my-1 haschildren">
+<a class="nav-link p-0" href=/learn-notes/><h6>学习笔记</h6></a>
+<ul class="list-unstyled ml-2">
+<li data-nav-id=/learn-notes/html/ class="nav-item my-1 haschildren">
+<a class="nav-link p-0" href=/learn-notes/html/><h6>HTML</h6></a>
+<ul class="list-unstyled ml-2">
+<li data-nav-id=/learn-notes/html/html-elements/ class="nav-item my-1">
+<a href=/learn-notes/html/html-elements/ class="nav-link p-0">
+HTML 元素
+</a>
+</li>
+</ul>
+</li>
+<li data-nav-id=/learn-notes/css/ class="nav-item my-1 haschildren">
+<a class="nav-link p-0" href=/learn-notes/css/><h6>CSS</h6></a>
+<ul class="list-unstyled ml-2">
+<li data-nav-id=/learn-notes/css/css/ class="nav-item my-1">
+<a href=/learn-notes/css/css/ class="nav-link p-0">
+HTML 元素
+</a>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li data-nav-id=/operation-guide/ class="nav-item my-1 parent haschildren">
+<a class="nav-link p-0" href=/operation-guide/><h6>操作指南</h6></a>
+<ul class="list-unstyled ml-2">
+<li data-nav-id=/operation-guide/hugo-githubactiongithub-pages-%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/ class="nav-item my-1 active">
+<a href=/operation-guide/hugo-githubactiongithub-pages-%E6%90%AD%E5%BB%BA%E4%B8%AA%E4%BA%BA%E5%8D%9A%E5%AE%A2/ class="nav-link p-0">
+Hugo&Github Action&Github Pages 搭建个人博客
+</a>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</nav>
+</div>
+<div class="docs-toc large order-lg-2 order-md-0 order-xs-1 col-12 col-lg-2 col-xl-2 position-sticky border-left"><div class=docs-toc>
+<nav id=TableOfContents>
+<ul>
+<li><a href=#介绍>介绍</a></li>
+<li><a href=#先决条件>先决条件</a>
+<ul>
+<li><a href=#准备-git必须>准备 Git（必须）</a></li>
+<li><a href=#准备-github-仓库必须>准备 Github 仓库（必须）</a></li>
+<li><a href=#准备-hugo必须>准备 Hugo（必须）</a></li>
+<li><a href=#准备域名可选>准备域名（可选）</a></li>
+</ul>
+</li>
+<li><a href=#创建博客>创建博客</a>
+<ul>
+<li><a href=#生成博客>生成博客</a></li>
+<li><a href=#应用主题>应用主题</a></li>
+<li><a href=#构建博客>构建博客</a></li>
+</ul>
+</li>
+<li><a href=#部署至-github>部署至 Github</a>
+<ul>
+<li><a href=#推送博客源码>推送博客源码</a></li>
+</ul>
+</li>
+<li><a href=#使用-github-action-自动构建>使用 Github Action 自动构建</a></li>
+</ul>
+</nav>
+</div>
+</div>
+<div class="main col-12 order-1 col-md-9 col-lg-10 col-xl-8 py-3">
+<h1>Hugo&Github Action&Github Pages 搭建个人博客</h1>
+<h2 id=介绍>介绍</h2>
+<p>大致的流程如下：</p>
+<ol>
+<li>首先通过 Hugo 生成博客网站，并进行配置、添加内容。</li>
+<li>然后在 Github 上创建一个 blog 仓库，并将博客源码推送到 blog 仓库的 <code>main</code> 分支。</li>
+<li>接着使用 Github Action 构建出静态网站，并自动推送至 <code>gh-pages 分支</code>。</li>
+<li>最后配置 Github Pages 绑定 <code>gh-pages</code> 分支上的内容，就可以使用生成或配置的域名进行访问。</li>
+</ol>
+<h2 id=先决条件>先决条件</h2>
+<h3 id=准备-git必须>准备 Git（必须）</h3>
+<p>如未安装 Git，参考 <a href=https://git-scm.com/book/en/v2/Getting-Started-Installing-Git>Git 安装指南</a> 进行安装。</p>
+<p>安装完成后，可以通过 <code>git version</code> 命令进行验证。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ git version
+git version 2.29.2.windows.2
+</code></pre></div><p>如果你是第一次安装，则需要初始化 Git 用户信息。将以下内容中邮箱和名字替换为合适的值并运行。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ git config --global user.email <span style=color:#d88200>&#34;you@example.com&#34;</span>
+$ git config --global user.name <span style=color:#d88200>&#34;Your Name&#34;</span>
+</code></pre></div><h3 id=准备-github-仓库必须>准备 Github 仓库（必须）</h3>
+<p>在 Github 上创建 blog 仓库，你也可以选择其他合适的名称作为博客的仓库。</p>
+<a href=https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107183013.png target=_blank class="btn btn-primary">
+点击查看配置仓库页面
+</a>
+<h3 id=准备-hugo必须>准备 Hugo（必须）</h3>
+<p>如未安装 Hugo，参考 <a href=https://gohugo.io/getting-started/installing/>Hugo 安装指南</a> 进行安装。</p>
+<p>安装完成后，可以通过 <code>hugo version</code> 命令进行验证。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ hugo version
+hugo v0.89.1-B6A4AE4A+extended windows/amd64 <span style=color:#111>BuildDate</span><span style=color:#f92672>=</span>2021-11-05T15:44:32Z <span style=color:#111>VendorInfo</span><span style=color:#f92672>=</span>gohugoio
+</code></pre></div><h3 id=准备域名可选>准备域名（可选）</h3>
+<p>部署至 Github 上以后，默认会使用 <code>&lt;username>.github.io</code> 域名访问你的博客。如果你想使用自己的域名，需要购买一个域名备用。可在<a href=https://buy.cloud.tencent.com/domain>腾讯云</a>、<a href=https://wanwang.aliyun.com/>阿里云</a>或其他域名供应商购买。</p>
+<h2 id=创建博客>创建博客</h2>
+<h3 id=生成博客>生成博客</h3>
+<p>使用 <code>hugo new site blog</code> 命令来生成博客源码仓库。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ hugo new site blog
+Congratulations! Your new Hugo site is created in C:<span style=color:#8045ff>\U</span>sers<span style=color:#8045ff>\P</span>eng.Gao<span style=color:#8045ff>\D</span>esktop<span style=color:#8045ff>\B</span>log<span style=color:#8045ff>\b</span>log.
+
+Just a few more steps and you are ready to go:
+
+1. Download a theme into the same-named folder.
+   Choose a theme from https://themes.gohugo.io/ or
+   create your own with the <span style=color:#d88200>&#34;hugo new theme &lt;THEMENAME&gt;&#34;</span> command.
+2. Perhaps you want to add some content. You can add single files
+   with <span style=color:#d88200>&#34;hugo new &lt;SECTIONNAME&gt;\&lt;FILENAME&gt;.&lt;FORMAT&gt;&#34;</span>.
+3. Start the built-in live server via <span style=color:#d88200>&#34;hugo server&#34;</span>.
+
+Visit https://gohugo.io/ <span style=color:#00a8c8>for</span> quickstart guide and full documentation.
+</code></pre></div><p>切换当前目录至 <code>blog</code> 目录，可以使用 <code>tree</code> 命令查看目录的结构。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ <span style=color:#111>cd</span> blog
+
+$ tree -L <span style=color:#ae81ff>1</span>
+.
+<span style=color:#111>|</span>-- archetypes
+<span style=color:#111>|</span>-- config.toml
+<span style=color:#111>|</span>-- content
+<span style=color:#111>|</span>-- data
+<span style=color:#111>|</span>-- layouts
+<span style=color:#111>|</span>-- static
+<span style=color:#d88200>`</span>-- themes
+
+<span style=color:#ae81ff>6</span> directories, <span style=color:#ae81ff>1</span> file
+</code></pre></div><h3 id=应用主题>应用主题</h3>
+<p>你可以选择一个喜欢的<a href=https://themes.gohugo.io/>主题</a>应用于你的博客，此博客使用的主题为 <a href=https://themes.gohugo.io/themes/ace-documentation/>Ace documentation</a>。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ git submodule add https://github.com/vantagedesign/ace-documentation themes/ace-documentation
+Cloning into <span style=color:#d88200>&#39;C:/Users/Peng.Gao/Desktop/Blog/docs/themes/ace-documentation&#39;</span>...
+remote: Enumerating objects: 555, <span style=color:#00a8c8>done</span>.
+remote: Counting objects: 100% <span style=color:#f92672>(</span>139/139<span style=color:#f92672>)</span>, <span style=color:#00a8c8>done</span>.
+remote: Compressing objects: 100% <span style=color:#f92672>(</span>90/90<span style=color:#f92672>)</span>, <span style=color:#00a8c8>done</span>.
+remote: Total <span style=color:#ae81ff>555</span> <span style=color:#f92672>(</span>delta 57<span style=color:#f92672>)</span>, reused <span style=color:#ae81ff>88</span> <span style=color:#f92672>(</span>delta 35<span style=color:#f92672>)</span>, pack-reused <span style=color:#ae81ff>416</span>
+Receiving objects: 100% <span style=color:#f92672>(</span>555/555<span style=color:#f92672>)</span>, 2.15 MiB <span style=color:#111>|</span> 683.00 KiB/s, <span style=color:#00a8c8>done</span>.
+Resolving deltas: 100% <span style=color:#f92672>(</span>191/191<span style=color:#f92672>)</span>, <span style=color:#00a8c8>done</span>.
+warning: LF will be replaced by CRLF in .gitmodules.
+The file will have its original line endings in your working directory
+</code></pre></div><p>接下来需要根据你应用主题的教程来配置 <code>config.toml</code> 文件，主题配置教程在刚才你寻找的主题页面上查看。</p>
+<p>还可以根据主题的样例去新添加一些内容，在此不过多说明。</p>
+<h3 id=构建博客>构建博客</h3>
+<p>配置完成后，在 <code>blog</code> 目录下可以使用 <code>hugo server</code> 启动 Web 服务器。Hugo 会构建站点内容到内存中并在检测到文件更改后重新渲染，方便在开发环境中实时预览对站点所做的更改。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ hugo server
+Start building sites …
+hugo v0.89.1-B6A4AE4A+extended windows/amd64 <span style=color:#111>BuildDate</span><span style=color:#f92672>=</span>2021-11-05T15:44:32Z <span style=color:#111>VendorInfo</span><span style=color:#f92672>=</span>gohugoio
+
+                   <span style=color:#111>|</span> EN
+-------------------+-----
+  Pages            <span style=color:#111>|</span> <span style=color:#ae81ff>18</span>
+  Paginator pages  <span style=color:#111>|</span>  <span style=color:#ae81ff>0</span>
+  Non-page files   <span style=color:#111>|</span>  <span style=color:#ae81ff>0</span>
+  Static files     <span style=color:#111>|</span> <span style=color:#ae81ff>26</span>
+  Processed images <span style=color:#111>|</span>  <span style=color:#ae81ff>0</span>
+  Aliases          <span style=color:#111>|</span>  <span style=color:#ae81ff>0</span>
+  Sitemaps         <span style=color:#111>|</span>  <span style=color:#ae81ff>1</span>
+  Cleaned          <span style=color:#111>|</span>  <span style=color:#ae81ff>0</span>
+
+Built in <span style=color:#ae81ff>173</span> ms
+Watching <span style=color:#00a8c8>for</span> changes in C:<span style=color:#8045ff>\U</span>sers<span style=color:#8045ff>\P</span>eng.Gao<span style=color:#8045ff>\D</span>esktop<span style=color:#8045ff>\B</span>log<span style=color:#8045ff>\d</span>ocs<span style=color:#8045ff>\{</span>archetypes,content,data,layouts,static,themes<span style=color:#f92672>}</span>
+Watching <span style=color:#00a8c8>for</span> config changes in C:<span style=color:#8045ff>\U</span>sers<span style=color:#8045ff>\P</span>eng.Gao<span style=color:#8045ff>\D</span>esktop<span style=color:#8045ff>\B</span>log<span style=color:#8045ff>\d</span>ocs<span style=color:#8045ff>\c</span>onfig.toml
+Environment: <span style=color:#d88200>&#34;development&#34;</span>
+Serving pages from memory
+Running in Fast Render Mode. For full rebuilds on change: hugo server --disableFastRender
+Web Server is available at http://localhost:1313/ <span style=color:#f92672>(</span><span style=color:#111>bind</span> address 127.0.0.1<span style=color:#f92672>)</span>
+Press Ctrl+C to stop
+</code></pre></div><p>如果你在远端开发，可以使用 <code>hugo server --bind 0.0.0.0</code> 配置绑定的网卡。
+如果你想更换端口号，也可以使用 <code>hugo server -p 80</code> 配置监听端口号。
+如果在调试阶段需要输出处于草稿状态的文章（通过在文章注释中添加 <code>draft: true</code> 配置），则需要使用 <code>hugo server -D</code> 来渲染草稿。</p>
+<p>想了解更多的选项，运行 <code>hugo --help</code> 来查看它们的说明。</p>
+<p>预览效果满意后，可以使用 <code>hugo</code> 命令进行构建。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ hugo
+Start building sites …
+hugo v0.89.1-B6A4AE4A+extended windows/amd64 <span style=color:#111>BuildDate</span><span style=color:#f92672>=</span>2021-11-05T15:44:32Z <span style=color:#111>VendorInfo</span><span style=color:#f92672>=</span>gohugoio
+
+                   <span style=color:#111>|</span> EN
+-------------------+-----
+  Pages            <span style=color:#111>|</span> <span style=color:#ae81ff>18</span>
+  Paginator pages  <span style=color:#111>|</span>  <span style=color:#ae81ff>0</span>
+  Non-page files   <span style=color:#111>|</span>  <span style=color:#ae81ff>0</span>
+  Static files     <span style=color:#111>|</span> <span style=color:#ae81ff>26</span>
+  Processed images <span style=color:#111>|</span>  <span style=color:#ae81ff>0</span>
+  Aliases          <span style=color:#111>|</span>  <span style=color:#ae81ff>0</span>
+  Sitemaps         <span style=color:#111>|</span>  <span style=color:#ae81ff>1</span>
+  Cleaned          <span style=color:#111>|</span>  <span style=color:#ae81ff>0</span>
+
+Total in <span style=color:#ae81ff>200</span> ms
+</code></pre></div><p>构建完成后，再观察 <code>blog</code> 目录，会发现出现了新的目录为 <code>public</code>，这个目录就是我们构建出来的静态网站，通过 <code>tree</code> 命令观察 <code>public</code>，就是一个静态页面的结构。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ tree -L <span style=color:#ae81ff>1</span> public/
+public/
+<span style=color:#111>|</span>-- 404.html
+<span style=color:#111>|</span>-- categories
+<span style=color:#111>|</span>-- css
+<span style=color:#111>|</span>-- img
+<span style=color:#111>|</span>-- index.html
+<span style=color:#111>|</span>-- index.json
+<span style=color:#111>|</span>-- js
+<span style=color:#111>|</span>-- learn-notes
+<span style=color:#111>|</span>-- lib
+<span style=color:#111>|</span>-- operation-guide
+<span style=color:#111>|</span>-- plugins
+<span style=color:#111>|</span>-- sitemap.xml
+<span style=color:#111>|</span>-- tags
+<span style=color:#d88200>`</span>-- webfonts
+
+<span style=color:#ae81ff>10</span> directories, <span style=color:#ae81ff>4</span> files
+</code></pre></div><h2 id=部署至-github>部署至 Github</h2>
+<h3 id=推送博客源码>推送博客源码</h3>
+<p>现在，我们就可以将 <code>blog</code> 目录中的源码推送至 Github 远程仓库的 <code>main</code> 分支了。</p>
+<p>但在推送前，应该还需要忽略一些文件。思考一下介绍时所描述的大致步骤，你的博客源码是存储在 <code>main</code> 分支的，经过自动构建才会最新生成的 <code>public</code> 文件中的内容推送至 <code>gh-pages</code> 分支，我们并不需要将 <code>public</code> 目录推送至 <code>main</code> 分支，因此需要忽略 <code>public</code> 目录。此外还可能需要忽略一些其他的文件或目录，比如启动 Web 服务时所生成的 <code>.hugo_build.lock</code> 文件和 <code>resources</code> 目录，或者由编辑器产生的本地配置目录及文件。以下是我在 <code>.gitignore</code> 文件中忽略的内容，仅供参考。</p>
+<pre tabindex=0><code class=language-gitignore data-lang=gitignore>*.lock
+*.vscode
+*.log
+*.idea
+resources/
+public/
+</code></pre><p>添加完 <code>.gitignore</code> 文件以后，你可以添加 Github 远程仓库并推送至 <code>main</code> 分支。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ git init
+$ git add .
+$ git commit -m <span style=color:#d88200>&#34;init&#34;</span>
+$ git branch -M main
+$ git remote add origin https://github.com/jugggao/blog.git
+$ git push -u origin main
+</code></pre></div>
+<div class="alert alert-warning" role=alert>
+<strong>注意</strong><br>
+需要更换远程仓库 URL 中的名称为你的 Github 用户名。
+</div>
+<h2 id=使用-github-action-自动构建>使用 Github Action 自动构建</h2>
+<p>我们将博客源码上传至 <code>main</code> 分支之后，就需要通过 Github Action 进行自动构建了，并将生成的 <code>public</code> 目录中的内容推送至 <code>gh-pages</code> 分支。</p>
+<p>在 <code>blog</code> 目录下新建 <code>.github/workflows/gh-pages.yml</code> 文件，文件内容如下。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>name</span><span style=color:#111>:</span> <span style=color:#ae81ff>Github Pages</span>
+
+<span style=color:#f92672>on</span><span style=color:#111>:</span>
+  <span style=color:#f92672>push</span><span style=color:#111>:</span>
+    <span style=color:#f92672>branches</span><span style=color:#111>:</span>
+      - <span style=color:#ae81ff>main</span>
+
+<span style=color:#f92672>jobs</span><span style=color:#111>:</span>
+  <span style=color:#f92672>deploy</span><span style=color:#111>:</span>
+    <span style=color:#f92672>runs-on</span><span style=color:#111>:</span> <span style=color:#ae81ff>ubuntu-latest</span>
+    <span style=color:#f92672>steps</span><span style=color:#111>:</span>
+      - <span style=color:#f92672>name</span><span style=color:#111>:</span> <span style=color:#ae81ff>Checkout</span>
+        <span style=color:#f92672>uses</span><span style=color:#111>:</span> <span style=color:#ae81ff>actions/checkout@v2</span>
+        <span style=color:#f92672>with</span><span style=color:#111>:</span>
+          <span style=color:#f92672>submodules</span><span style=color:#111>:</span> <span style=color:#00a8c8>true</span>
+          <span style=color:#f92672>fetch-depth</span><span style=color:#111>:</span> <span style=color:#ae81ff>0</span>
+
+      - <span style=color:#f92672>name</span><span style=color:#111>:</span> <span style=color:#ae81ff>Read .env</span>
+        <span style=color:#f92672>id</span><span style=color:#111>:</span> <span style=color:#ae81ff>hugo-version</span>
+        <span style=color:#f92672>run</span><span style=color:#111>:</span> <span style=color:#111>|</span><span style=color:#d88200>
+</span><span style=color:#d88200>          . ./.env
+</span><span style=color:#d88200>          echo &#34;::set-output name=HUGO_VERSION::${HUGO_VERSION}&#34;</span>          
+
+      - <span style=color:#f92672>name</span><span style=color:#111>:</span> <span style=color:#ae81ff>Setup Hugo</span>
+        <span style=color:#f92672>uses</span><span style=color:#111>:</span> <span style=color:#ae81ff>peaceiris/actions-hugo@v2</span>
+        <span style=color:#f92672>with</span><span style=color:#111>:</span>
+          <span style=color:#f92672>hugo-version</span><span style=color:#111>:</span> <span style=color:#d88200>&#39;${{ steps.hugo-version.outputs.HUGO_VERSION }}&#39;</span>
+          <span style=color:#f92672>extended</span><span style=color:#111>:</span> <span style=color:#00a8c8>true</span>
+
+      - <span style=color:#f92672>name</span><span style=color:#111>:</span> <span style=color:#ae81ff>Build</span>
+        <span style=color:#f92672>run</span><span style=color:#111>:</span> <span style=color:#ae81ff>hugo --minify</span>
+
+      - <span style=color:#f92672>name</span><span style=color:#111>:</span> <span style=color:#ae81ff>Deploy</span>
+        <span style=color:#f92672>uses</span><span style=color:#111>:</span> <span style=color:#ae81ff>peaceiris/actions-gh-pages@v3</span>
+        <span style=color:#f92672>with</span><span style=color:#111>:</span>
+          <span style=color:#f92672>github_token</span><span style=color:#111>:</span> <span style=color:#ae81ff>${{ secrets.ACTIONS_TOKEN }}</span>
+          <span style=color:#f92672>publish_branch</span><span style=color:#111>:</span> <span style=color:#ae81ff>gh-pages</span>
+          <span style=color:#f92672>publish_dir</span><span style=color:#111>:</span> <span style=color:#ae81ff>./public</span>
+          <span style=color:#f92672>cname</span><span style=color:#111>:</span> <span style=color:#ae81ff>www.shisanshiji.com</span>
+          <span style=color:#f92672>user_name</span><span style=color:#111>:</span> <span style=color:#d88200>&#39;jugggao&#39;</span>
+          <span style=color:#f92672>user_email</span><span style=color:#111>:</span> <span style=color:#d88200>&#39;jugg.gao@qq.com&#39;</span>
+          <span style=color:#f92672>commit_message</span><span style=color:#111>:</span> <span style=color:#ae81ff>${{ github.event.head_commit.message }}</span>
+          <span style=color:#f92672>enable_jekyll</span><span style=color:#111>:</span> <span style=color:#00a8c8>false</span>
+          <span style=color:#f92672>allow_empty_commit</span><span style=color:#111>:</span> <span style=color:#00a8c8>true</span>
+</code></pre></div><p>此 Github Action 的动作如下：</p>
+<ul>
+<li>通过 <code>on.push.branches: ['main']</code> 指定了只有在推送至 <code>main</code> 分支时才会触发此 Action。</li>
+<li>Checkout 阶段进行拉取代码，包括子模块中的代码（上面你克隆的主题代码仓库）。</li>
+<li>Read .env 阶段会读取当前目录中的 <code>.env</code> 文件中的 <code>HUGO_VERSION</code> 的值，并配置为当前 ACTION 的环境变量。</li>
+<li>Setup hugo 阶段会根据刚才配置的 <code>HUGO_VERSION</code> 的版本号配置 Hugo 环境。</li>
+<li>Build 阶段会进行源码构建，构建的静态网站存储在 <code>public</code> 目录。</li>
+<li>Deploy 阶段通过 <code>secrets.ACTIONS_TOKEN</code> 值进行认证，认证过后再将构建的 <code>public</code> 目录中的内容推送到 <code>gh-pages</code> 分支。</li>
+</ul>
+<div class="alert alert-warning" role=alert>
+<p><strong>注意</strong></p>
+<ol>
+<li>需要替换 Deploy 阶段 <code>with.user_name</code> 与 <code>with.user_email</code> 的值。</li>
+<li>如果你不希望每次都拉取应用主题仓库的最新代码，可以将 Checkout 阶段的 <code>with.submodules</code> 的值改为 <code>False</code>。</li>
+<li>如果你使用 Github 提供的默认域名，则需要删除 <code>with.cname</code> 这一行配置。</li>
+</ol>
+</div>
+<p>你会发现在推送之前还需要两个操作：</p>
+<ol>
+<li>创建 <code>.env</code> 文件，并指定 Hugo 版本。</li>
+<li>生成 Github Token 并在 blog 仓库中配置。</li>
+</ol>
+<p>首先，在 <code>blog</code> 目录下 <code>.env</code> 文件，内容如下所示。你还可以将版本替换为你本地正在使用的版本以避免不确定的错误。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-env data-lang=env><span style=color:#111>HUGO_VERSION</span><span style=color:#f92672>=</span>0.89.1
+</code></pre></div><p>然后，在 Github 中点击用户头像依次点击「Settings」 -> 「Developer settings」->「Personal access tokens」->「Generate new token」 来生成 Token。</p>
+<a href=https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107205838.png target=_blank class="btn btn-primary">
+点击查看生成 Token 配置页面
+</a>
+<p>最后，回到你的 blog 仓库，点击「Settings」->「Secrets」->「New repository secret」 添加刚才生成的 Token。名称需要和 <code>gh-pages.yml</code> 中引用的 <code>ACTIONS_TOKEN</code> 环境变量保持一致。</p>
+<a href=https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107210803.png target=_blank class="btn btn-primary">
+点击查看添加 Token 配置页面
+</a>
+<p>准备完成之后，将新添加的文件推送至远程仓库。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ git add .
+$ git commit -m <span style=color:#d88200>&#34;添加 Github Action 相关文件&#34;</span>
+$ git push -u origin main
+</code></pre></div>
+<div class=row><div class="position-relative mx-auto col-lg-9">
+<div class="bg-primary overflow-hidden p-3 mt-5 shadow">
+<h4 class="text-white text-center">阅读更多</h4>
+<div class="d-flex justify-content-center"><a class="p-1 mr-3 d-inline-block text-white" href=/operation-guide/ title=操作指南><i class="fas fa-chevron-left p-1"></i>操作指南</a>
+<a class="p-1 ml-3 d-inline-block text-white text-right" href=/learn-notes/ title=学习笔记>学习笔记<i class="fas fa-chevron-right p-1"></i></a>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</div>
+<script src=https://www.shisanshiji.comlib/jquery.min.js></script>
+<script src=https://www.shisanshiji.comlib/popper.min.js></script>
+<script src=https://www.shisanshiji.comjs/bootstrap.min.js></script>
+<script type=text/javascript src=/plugins/lunr.min.js></script>
+<script type=text/javascript src=/plugins/auto-complete.js></script>
+<link href=/plugins/auto-complete.css rel=stylesheet>
+<script type=text/javascript>var baseurl="https://www.shisanshiji.com"</script>
+<script type=text/javascript src=/plugins/search.js></script>
+<script type=text/javascript src=/plugins/clipboard.js></script>
+<script>new ClipboardJS('.btn')</script>
+</body>
+</html>
