@@ -201,21 +201,26 @@ public/
 
 现在，我们就可以将 `blog` 目录中的源码推送至 Github 远程仓库的 `main` 分支了。
 
-但在推送前，应该还需要忽略一些文件。思考一下介绍时所描述的大致步骤，你的博客源码是存储在 `main` 分支的，经过自动构建才会最新生成的 `public` 文件中的内容推送至 `gh-pages` 分支，我们并不需要将 `public` 目录推送至 `main` 分支，因此需要忽略 `public` 目录。此外还可能需要忽略一些其他的文件或目录，比如启动 Web 服务时所生成的 `.hugo_build.lock` 文件，或者由编辑器产生的本地配置目录及文件。以下是我在 `.gitignore` 文件中忽略的内容，仅供参考。
+但在推送前，应该还需要忽略一些文件。思考一下介绍时所描述的大致步骤，你的博客源码是存储在 `main` 分支的，经过自动构建才会最新生成的 `public` 文件中的内容推送至 `gh-pages` 分支，我们并不需要将 `public` 目录推送至 `main` 分支，因此需要忽略 `public` 目录。此外还可能需要忽略一些其他的文件或目录，比如启动 Web 服务时所生成的 `.hugo_build.lock` 文件和 `resources` 目录，或者由编辑器产生的本地配置目录及文件。以下是我在 `.gitignore` 文件中忽略的内容，仅供参考。
 
 ```gitignore
 *.lock
 *.vscode
 *.log
 *.idea
+resources/
 public/
 ```
 
 添加完 `.gitignore` 文件以后，你可以添加 Github 远程仓库并推送至 `main` 分支。
 
 ```bash
-
+$ git init
+$ git add .
+$ git commit -m "init"
+$ git branch -M main
+$ git remote add origin https://github.com/jugggao/blog.git
+$ git push -u origin main
 ```
-
 
 
