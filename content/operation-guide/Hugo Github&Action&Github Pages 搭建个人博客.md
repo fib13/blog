@@ -336,10 +336,23 @@ Github Action 运行成功后，你会发现在 blog 仓库中新增了 `gh-page
 
 ### 配置 Github Pages
 
-在 blog 仓库页面中依次点击「Settings」->「Pages」。确定你开启了 Pages 功能，配
+在 blog 仓库页面中依次点击「Settings」->「Pages」。确定你开启了 Pages 功能并一切正常。
 
-
-{{< button style="primary" link="https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107213117.png" >}}
-点击查看 Github Action 运行页面
+{{< button style="primary" link="https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107221301.png" >}}
+点击查看 Github Pages 配置页面
 {{< /button >}}
+
+如果你之前事前准备了自定义域名，可以参考 [Github 官方文档](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages) 说明一步步配置自定义域名。配置完成后，可以勾选「Enforce HTTPS」 选项并由 Github 自动为你的域名颁发 SSL 证书。
+
+### 验证博客访问
+
+最后，在浏览器中输入你的博客网址来验收成果。
+
+![20211107222913](https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107222913.png)
+
+## 参考
+
+- [GitHub Pages Documentation](https://docs.github.com/en/pages)
+- [Hugo+GitHub Action+Github Pages搭建个人博客](https://pingyangblog.com/setup-hugo-blog/)
+- [Ace documentation](https://docs.vantage-design.com/)
 
