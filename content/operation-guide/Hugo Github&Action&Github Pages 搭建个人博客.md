@@ -99,16 +99,16 @@ $ tree -L 1
 你可以选择一个喜欢的[主题](https://themes.gohugo.io/)应用于你的博客，此博客使用的主题为 [Ace documentation](https://themes.gohugo.io/themes/ace-documentation/)。
 
 ```bash
-$ cd themes
-
-$ git clone https://github.com/vantagedesign/ace-documentation
-Cloning into 'ace-documentation'...
+$ git submodule add https://github.com/vantagedesign/ace-documentation themes/ace-documentation
+Cloning into 'C:/Users/Peng.Gao/Desktop/Blog/docs/themes/ace-documentation'...
 remote: Enumerating objects: 555, done.
 remote: Counting objects: 100% (139/139), done.
 remote: Compressing objects: 100% (90/90), done.
 remote: Total 555 (delta 57), reused 88 (delta 35), pack-reused 416
-Receiving objects: 100% (555/555), 2.15 MiB | 2.41 MiB/s, done.
+Receiving objects: 100% (555/555), 2.15 MiB | 683.00 KiB/s, done.
 Resolving deltas: 100% (191/191), done.
+warning: LF will be replaced by CRLF in .gitmodules.
+The file will have its original line endings in your working directory
 ```
 
 接下来需要根据你应用主题的教程来配置 `config.toml` 文件，主题配置教程在刚才你寻找的主题页面上查看。
@@ -224,7 +224,8 @@ $ git push -u origin main
 ```
 
 {{< alert style="warning" >}}
-注意：需要更换远程仓库 URL 中的名称为你的 Github 用户名。
+**注意**  
+需要更换远程仓库 URL 中的名称为你的 Github 用户名。
 {{< /alert >}}
 
 ## 使用 Github Action 自动构建
@@ -288,6 +289,13 @@ jobs:
 - Build 阶段会进行源码构建，构建的静态网站存储在 `public` 目录。
 - Deploy 阶段通过 `secrets.ACTIONS_TOKEN` 值进行认证，认证过后再将构建的 `public` 目录中的内容推送到 `gh-pages` 分支。
 
+{{< alert style="warning" >}}
+**注意**  
+1. 需要替换 Deploy 阶段 `with.user_name` 与 `with.user_email` 的值。
+2. 如果你不希望每次都拉取应用主题仓库的最新代码，可以将 Checkout 阶段的 `with.submodules` 的值改为 `False`。
+3. 如果你使用 Github 提供的默认域名，则需要删除 `with.cname` 这一行配置。
+{{< /alert >}}
+
 你会发现在推送之前还需要两个操作：
 1. 创建 `.env` 文件，并指定 Hugo 版本。
 2. 生成 Github Token 并在 blog 仓库中配置。
@@ -313,7 +321,9 @@ HUGO_VERSION=0.89.1
 准备完成之后，将新添加的文件推送至远程仓库。
 
 ```bash
-
+$ git add .
+$ git commit -m "添加 Github Action 相关文件"
+$ git push -u origin main
 ```
 
 
