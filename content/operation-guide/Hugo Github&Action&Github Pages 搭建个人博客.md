@@ -9,9 +9,9 @@ weight = 1
 大致的流程如下：
 
 1. 首先通过 Hugo 生成博客网站，并进行配置、添加内容。
-2. 然后在 Github 上创建一个 `blog` 仓库，并将博客源码推送到 `blog` 仓库的 `main` 分支。
+2. 然后在 Github 上创建一个 blog 仓库，并将博客源码推送到 blog 仓库的 `main` 分支。
 3. 接着使用 Github Action 构建出静态网站，并自动推送至 `gh-pages 分支`。
-4. 最后配置 Github Pages 绑定 `blog` 的 `gh-pages` 分支上的内容，就可以使用生成或配置的域名进行访问。
+4. 最后配置 Github Pages 绑定 `gh-pages` 分支上的内容，就可以使用生成或配置的域名进行访问。
 
 ## 先决条件
 
@@ -35,7 +35,7 @@ $ git config --global user.name "Your Name"
 
 ### 准备 Github 仓库（必须）
 
-在 Github 上创建 `blog` 仓库，你也可以选择其他合适的名称作为博客的仓库。
+在 Github 上创建 blog 仓库，你也可以选择其他合适的名称作为博客的仓库。
 
 {{< button style="primary" link="https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107183013.png" >}} 点击查看配置仓库页面 {{< /button >}}
 
@@ -222,5 +222,100 @@ $ git branch -M main
 $ git remote add origin https://github.com/jugggao/blog.git
 $ git push -u origin main
 ```
+
+{{< alert style="warning" >}}
+注意：需要更换远程仓库 URL 中的名称为你的 Github 用户名。
+{{< /alert >}}
+
+## 使用 Github Action 自动构建
+
+我们将博客源码上传至 `main` 分支之后，就需要通过 Github Action 进行自动构建了，并将生成的 `public` 目录中的内容推送至 `gh-pages` 分支。
+
+在 `blog` 目录下新建 `.github/workflows/gh-pages.yml` 文件，文件内容如下。
+
+```yaml
+name: Github Pages
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+          fetch-depth: 0
+
+      - name: Read .env
+        id: hugo-version
+        run: |
+          . ./.env
+          echo "::set-output name=HUGO_VERSION::${HUGO_VERSION}"
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v2
+        with:
+          hugo-version: '${{ steps.hugo-version.outputs.HUGO_VERSION }}'
+          extended: true
+
+      - name: Build
+        run: hugo --minify
+
+      - name: Deploy
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.ACTIONS_TOKEN }}
+          publish_branch: gh-pages
+          publish_dir: ./public
+          cname: www.shisanshiji.com
+          user_name: 'jugggao'
+          user_email: 'jugg.gao@qq.com'
+          commit_message: ${{ github.event.head_commit.message }}
+          enable_jekyll: false
+          allow_empty_commit: true
+```
+
+此 Github Action 的动作如下：
+- 通过 `on.push.branches: ['main']` 指定了只有在推送至 `main` 分支时才会触发此 Action。
+- Checkout 阶段进行拉取代码，包括子模块中的代码（上面你克隆的主题代码仓库）。
+- Read .env 阶段会读取当前目录中的 `.env` 文件中的 `HUGO_VERSION` 的值，并配置为当前 ACTION 的环境变量。
+- Setup hugo 阶段会根据刚才配置的 `HUGO_VERSION` 的版本号配置 Hugo 环境。
+- Build 阶段会进行源码构建，构建的静态网站存储在 `public` 目录。
+- Deploy 阶段通过 `secrets.ACTIONS_TOKEN` 值进行认证，认证过后再将构建的 `public` 目录中的内容推送到 `gh-pages` 分支。
+
+你会发现在推送之前还需要两个操作：
+1. 创建 `.env` 文件，并指定 Hugo 版本。
+2. 生成 Github Token 并在 blog 仓库中配置。
+
+首先，在 `blog` 目录下 `.env` 文件，内容如下所示。你还可以将版本替换为你本地正在使用的版本以避免不确定的错误。
+
+```env
+HUGO_VERSION=0.89.1
+```
+
+然后，在 Github 中点击用户头像依次点击「Settings」 -> 「Developer settings」->「Personal access tokens」->「Generate new token」 来生成 Token。
+
+{{< button style="primary" link="https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107205838.png" >}}
+点击查看生成 Token 配置页面
+{{< /button >}}
+
+最后，回到你的 blog 仓库，点击「Settings」->「Secrets」->「New repository secret」 添加刚才生成的 Token。名称需要和 `gh-pages.yml` 中引用的 `ACTIONS_TOKEN` 环境变量保持一致。
+
+{{< button style="primary" link="https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107210803.png" >}}
+点击查看添加 Token 配置页面
+{{< /button >}}
+
+准备完成之后，将新添加的文件推送至远程仓库。
+
+```bash
+
+```
+
+
 
 
