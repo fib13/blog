@@ -228,7 +228,7 @@ $ git push -u origin main
 需要更换远程仓库 URL 中的名称为你的 Github 用户名。
 {{< /alert >}}
 
-## 使用 Github Action 自动构建
+### 使用 Github Action 自动构建
 
 我们将博客源码上传至 `main` 分支之后，就需要通过 Github Action 进行自动构建了，并将生成的 `public` 目录中的内容推送至 `gh-pages` 分支。
 
@@ -326,6 +326,20 @@ $ git commit -m "添加 Github Action 相关文件"
 $ git push -u origin main
 ```
 
+这时，你可以在 blog 仓库页面中点击「Actions」观察 Wrokflows 的运行状况。如果发生错误，可以对每个阶段进行展开查看运行日志进行排查。
+
+{{< button style="primary" link="https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107213117.png" >}}
+点击查看 Github Action 运行页面
+{{< /button >}}
+
+Github Action 运行成功后，你会发现在 blog 仓库中新增了 `gh-pages` 分支，分支的内容正是之前我们手动构建时生成的 `public` 目录下静态网站。
+
+### 配置 Github Pages
+
+在 blog 仓库页面中依次点击「Settings」->「Pages」。确定你开启了 Pages 功能，配
 
 
+{{< button style="primary" link="https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107213117.png" >}}
+点击查看 Github Action 运行页面
+{{< /button >}}
 

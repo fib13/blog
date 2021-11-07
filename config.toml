@@ -1,4 +1,4 @@
-baseURL = 'https://www.shisanshiji.com'
+baseURL = 'https://www.shisanshiji.com/'
 languageCode = "en-us"
 DefaultContentLanguage = "en"
 title = '十三时记'
