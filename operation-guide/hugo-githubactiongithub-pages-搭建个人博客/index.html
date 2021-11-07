@@ -103,8 +103,10 @@ Hugo&Github Action&Github Pages 搭建个人博客
 <li><a href=#推送博客源码>推送博客源码</a></li>
 <li><a href=#使用-github-action-自动构建>使用 Github Action 自动构建</a></li>
 <li><a href=#配置-github-pages>配置 Github Pages</a></li>
+<li><a href=#验证博客访问>验证博客访问</a></li>
 </ul>
 </li>
+<li><a href=#参考>参考</a></li>
 </ul>
 </nav>
 </div>
@@ -360,10 +362,20 @@ $ git push -u origin main
 </a>
 <p>Github Action 运行成功后，你会发现在 blog 仓库中新增了 <code>gh-pages</code> 分支，分支的内容正是之前我们手动构建时生成的 <code>public</code> 目录下静态网站。</p>
 <h3 id=配置-github-pages>配置 Github Pages</h3>
-<p>在 blog 仓库页面中依次点击「Settings」->「Pages」。确定你开启了 Pages 功能，配</p>
-<a href=https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107213117.png target=_blank class="btn btn-primary">
-点击查看 Github Action 运行页面
+<p>在 blog 仓库页面中依次点击「Settings」->「Pages」。确定你开启了 Pages 功能并一切正常。</p>
+<a href=https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107221301.png target=_blank class="btn btn-primary">
+点击查看 Github Pages 配置页面
 </a>
+<p>如果你之前事前准备了自定义域名，可以参考 <a href=https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/about-custom-domains-and-github-pages>Github 官方文档</a> 说明一步步配置自定义域名。配置完成后，可以勾选「Enforce HTTPS」 选项并由 Github 自动为你的域名颁发 SSL 证书。</p>
+<h3 id=验证博客访问>验证博客访问</h3>
+<p>最后，在浏览器中输入你的博客网址来验收成果。</p>
+<p><img src=https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107222913.png alt=20211107222913></p>
+<h2 id=参考>参考</h2>
+<ul>
+<li><a href=https://docs.github.com/en/pages>GitHub Pages Documentation</a></li>
+<li><a href=https://pingyangblog.com/setup-hugo-blog/>Hugo+GitHub Action+Github Pages搭建个人博客</a></li>
+<li><a href=https://docs.vantage-design.com/>Ace documentation</a></li>
+</ul>
 <div class=row><div class="position-relative mx-auto col-lg-9">
 <div class="bg-primary overflow-hidden p-3 mt-5 shadow">
 <h4 class="text-white text-center">阅读更多</h4>
