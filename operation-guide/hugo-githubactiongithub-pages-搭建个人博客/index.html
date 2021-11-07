@@ -5,7 +5,7 @@
 <title>
 Hugo&Github Action&Github Pages 搭建个人博客 | 十三时记
 </title>
-<link href=https://www.shisanshiji.comcss/fontawesome.min.css rel=stylesheet>
+<link href=https://www.shisanshiji.com/css/fontawesome.min.css rel=stylesheet>
 <link rel=stylesheet href=https://www.shisanshiji.com/css/ace.min.css>
 </head>
 <body><nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow sticky-top" id=navbarMain>
@@ -101,9 +101,10 @@ Hugo&Github Action&Github Pages 搭建个人博客
 <li><a href=#部署至-github>部署至 Github</a>
 <ul>
 <li><a href=#推送博客源码>推送博客源码</a></li>
+<li><a href=#使用-github-action-自动构建>使用 Github Action 自动构建</a></li>
+<li><a href=#配置-github-pages>配置 Github Pages</a></li>
 </ul>
 </li>
-<li><a href=#使用-github-action-自动构建>使用 Github Action 自动构建</a></li>
 </ul>
 </nav>
 </div>
@@ -270,7 +271,7 @@ $ git push -u origin main
 <strong>注意</strong><br>
 需要更换远程仓库 URL 中的名称为你的 Github 用户名。
 </div>
-<h2 id=使用-github-action-自动构建>使用 Github Action 自动构建</h2>
+<h3 id=使用-github-action-自动构建>使用 Github Action 自动构建</h3>
 <p>我们将博客源码上传至 <code>main</code> 分支之后，就需要通过 Github Action 进行自动构建了，并将生成的 <code>public</code> 目录中的内容推送至 <code>gh-pages</code> 分支。</p>
 <p>在 <code>blog</code> 目录下新建 <code>.github/workflows/gh-pages.yml</code> 文件，文件内容如下。</p>
 <div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-yaml data-lang=yaml><span style=color:#f92672>name</span><span style=color:#111>:</span> <span style=color:#ae81ff>Github Pages</span>
@@ -353,7 +354,16 @@ $ git push -u origin main
 <div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>$ git add .
 $ git commit -m <span style=color:#d88200>&#34;添加 Github Action 相关文件&#34;</span>
 $ git push -u origin main
-</code></pre></div>
+</code></pre></div><p>这时，你可以在 blog 仓库页面中点击「Actions」观察 Wrokflows 的运行状况。如果发生错误，可以对每个阶段进行展开查看运行日志进行排查。</p>
+<a href=https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107213117.png target=_blank class="btn btn-primary">
+点击查看 Github Action 运行页面
+</a>
+<p>Github Action 运行成功后，你会发现在 blog 仓库中新增了 <code>gh-pages</code> 分支，分支的内容正是之前我们手动构建时生成的 <code>public</code> 目录下静态网站。</p>
+<h3 id=配置-github-pages>配置 Github Pages</h3>
+<p>在 blog 仓库页面中依次点击「Settings」->「Pages」。确定你开启了 Pages 功能，配</p>
+<a href=https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211107213117.png target=_blank class="btn btn-primary">
+点击查看 Github Action 运行页面
+</a>
 <div class=row><div class="position-relative mx-auto col-lg-9">
 <div class="bg-primary overflow-hidden p-3 mt-5 shadow">
 <h4 class="text-white text-center">阅读更多</h4>
@@ -365,13 +375,13 @@ $ git push -u origin main
 </div>
 </div>
 </div>
-<script src=https://www.shisanshiji.comlib/jquery.min.js></script>
-<script src=https://www.shisanshiji.comlib/popper.min.js></script>
-<script src=https://www.shisanshiji.comjs/bootstrap.min.js></script>
+<script src=https://www.shisanshiji.com/lib/jquery.min.js></script>
+<script src=https://www.shisanshiji.com/lib/popper.min.js></script>
+<script src=https://www.shisanshiji.com/js/bootstrap.min.js></script>
 <script type=text/javascript src=/plugins/lunr.min.js></script>
 <script type=text/javascript src=/plugins/auto-complete.js></script>
 <link href=/plugins/auto-complete.css rel=stylesheet>
-<script type=text/javascript>var baseurl="https://www.shisanshiji.com"</script>
+<script type=text/javascript>var baseurl="https://www.shisanshiji.com/"</script>
 <script type=text/javascript src=/plugins/search.js></script>
 <script type=text/javascript src=/plugins/clipboard.js></script>
 <script>new ClipboardJS('.btn')</script>
