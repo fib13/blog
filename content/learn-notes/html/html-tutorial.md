@@ -4,8 +4,52 @@ description = ""
 weight = 1
 +++
 
-{{< doublecode lang="html" >}}
-{{< /doublecode >}}
+- [HTML Attributes](#html-attributes)
+  - [The href Attrribute](#the-href-attrribute)
+  - [The src Attribute](#the-src-attribute)
+  - [The width and height Atrributes](#the-width-and-height-atrributes)
+  - [The alt Attribute](#the-alt-attribute)
+  - [The style Attribute](#the-style-attribute)
+  - [The title Attribute](#the-title-attribute)
+- [HTML Headings](#html-headings)
+  - [HTML Headings](#html-headings-1)
+  - [Bigger Headings](#bigger-headings)
+- [HTML Paragraphs](#html-paragraphs)
+  - [HTML Paragraphs](#html-paragraphs-1)
+  - [THML Horizontal Rules](#thml-horizontal-rules)
+  - [HTML Line Breaks](#html-line-breaks)
+  - [The Poem Problem](#the-poem-problem)
+- [HTML Styles](#html-styles)
+  - [Syntax](#syntax)
+  - [Backgroud Color](#backgroud-color)
+  - [Text Color](#text-color)
+  - [Fonts](#fonts)
+  - [Text Size](#text-size)
+  - [Text Alignment](#text-alignment)
+- [HTML Formatting](#html-formatting)
+  - [HTML `<b>` and `<strong>` Elements](#html-b-and-strong-elements)
+  - [HTML `<i>` and `<em>` Elements](#html-i-and-em-elements)
+  - [HTML `<small>` Elements](#html-small-elements)
+  - [HTML `<mark>` Elements](#html-mark-elements)
+  - [HTML `<del>` Element](#html-del-element)
+  - [THML `<ins>` Element](#thml-ins-element)
+  - [THML `<sub>` Element](#thml-sub-element)
+  - [HTML `<sup>` Element](#html-sup-element)
+- [HTML Quotation and Citation Element](#html-quotation-and-citation-element)
+  - [HTML `<blockquote>` For Quotations](#html-blockquote-for-quotations)
+  - [HTML `<q>` for Short Quotations](#html-q-for-short-quotations)
+  - [HTML `<abbr>` for Abbreviations](#html-abbr-for-abbreviations)
+  - [HTML `<address>` for Contact](#html-address-for-contact)
+  - [HTML `<cite>` for Work Title](#html-cite-for-work-title)
+  - [HTML `<bdo>` for Bi-Derectional Override](#html-bdo-for-bi-derectional-override)
+- [THML Comments](#thml-comments)
+  - [Hide Content](#hide-content)
+  - [Hide Inline Content](#hide-inline-content)
+- [HTML Colors](#html-colors)
+  - [Colors](#colors)
+  - [RGB](#rgb)
+  - [HEX](#hex)
+  - [HSL](#hsl)
 
 ## HTML Attributes
 
@@ -138,8 +182,8 @@ The HTML `style` attribute is used to add styles to an element, such as color, f
 
 {{< doublecode lang="html" >}}
 <div style="background-color:powderblue;">
-    <h1>十三时记</h1>
-    <p>无他，惟手熟尔</p>
+    <h1>可见页面内容背景色</h1>
+    <p>浅蓝色</p>
 </div>
 {{< /doublecode >}}
 
@@ -147,3 +191,251 @@ The HTML `style` attribute is used to add styles to an element, such as color, f
 **注意**  
 因防止全局渲染，因此将 `body` 元素换成 `div` 元素。
 {{< /alert >}}
+
+{{< doublecode lang="html" >}}
+<body>
+    <h1 style="background-color:powderblue;">标题背景为浅蓝</h1>
+    <p style="background-color:tomato;">段落背景为番茄色</p>
+</body>
+{{< /doublecode >}}
+
+### Text Color
+
+{{< doublecode lang="html" >}}
+<h1 style="color:blue;">字体蓝色</h1>
+<p style="color:red">字体红色</p>
+{{< /doublecode >}}
+
+### Fonts
+
+{{< doublecode lang="html" >}}
+<h1 style="font-family:Simsun;">宋体</h1>
+<p style="font-family:FangSong">仿宋</p>
+{{< /doublecode >}}
+
+### Text Size
+
+{{< doublecode lang="html" >}}
+<h1 style="font-size:300%">字体放大 3 倍</h1>
+<p style="font-size:160%">放大 1.6 倍</p>
+{{< /doublecode >}}
+
+### Text Alignment
+
+{{< doublecode lang="html" >}}
+<h1 style="text-align:center">居中</h1>
+<p style="text-align:right">居右</p>
+{{< /doublecode >}}
+
+## HTML Formatting
+
+{{< lead >}}
+HTML contains several elements for defining text with a special meaning.
+{{< /lead >}}
+
+### HTML `<b>` and `<strong>` Elements
+
+{{< doublecode lang="html" >}}
+<b>粗体，没有额外的重要性</b>
+<hr>
+<strong>重要性文本，以粗体显示</strong>
+{{< /doublecode >}}
+
+### HTML `<i>` and `<em>` Elements
+
+{{< doublecode lang="html" >}}
+<i>斜体，通常使用在技术术语，或其他语言的短语、思想等</i>
+<hr>
+<em>强调文本，以斜体显示</em>
+{{< /doublecode >}}
+
+
+### HTML `<small>` Elements
+
+{{< doublecode lang="html" >}}
+<small>更小的文本</small>
+{{< /doublecode >}}
+
+### HTML `<mark>` Elements
+
+{{< doublecode lang="html" >}}
+<p><mark>标记</mark>或<mark>突出显示</mark>的文本</p>
+{{< /doublecode >}}
+
+
+### HTML `<del>` Element
+
+{{< doublecode lang="html" >}}
+<p>即将要<del>删除</del>的文本</p>
+{{< /doublecode >}}
+
+### THML `<ins>` Element
+
+{{< doublecode lang="html" >}}
+<p>即将要<ins>插入</ins>的文本</p>
+{{< /doublecode >}}
+
+### THML `<sub>` Element
+
+{{< doublecode lang="html" >}}
+<p>H<sub>2</sub>O</p>
+{{< /doublecode >}}
+
+### HTML `<sup>` Element
+
+{{< doublecode lang="html" >}}
+<p>脚注<sup>[1]</sup></p>
+{{< /doublecode >}}
+
+## HTML Quotation and Citation Element
+
+### HTML `<blockquote>` For Quotations
+
+{{< doublecode lang="html" >}}
+<p>引用自《卖油翁》：</p>
+<blockquote cite="https://zh.m.wikisource.org/zh-hans/%E8%B3%A3%E6%B2%B9%E7%BF%81">
+我亦无他，惟手熟尔。
+</blockquote>
+{{< /doublecode >}}
+
+### HTML `<q>` for Short Quotations
+
+{{< doublecode lang="html" >}}
+<p>鲁迅说过：<q>愿中国青年都摆脱冷气，只是向上走，不必听自暴自弃者流的话。</q></p>
+{{< /doublecode >}}
+
+
+### HTML `<abbr>` for Abbreviations
+
+{{< doublecode lang="html" >}}
+<p><abbr title="此缩写的描述信息">缩写</abbr>，将鼠标悬停在上面会显示描述信息。</p>
+{{< /doublecode >}}
+
+### HTML `<address>` for Contact
+
+{{< doublecode lang="html" >}}
+<address>
+剑十三<br>
+shisanshiji.com<br>
+中国
+</address>
+{{< /doublecode >}}
+
+### HTML `<cite>` for Work Title
+
+{{< doublecode lang="html" >}}
+<p><cite>齐白石虾图</cite> 由齐白石于 1954 年创作。
+<p><cite>肖申克的救赎</cite> 由弗兰克·德拉邦特导演于 1994 年上映。
+{{< /doublecode >}}
+
+### HTML `<bdo>` for Bi-Derectional Override
+
+{{< doublecode lang="html" >}}
+<bdo dir="rtl">这个文本会从右往左写</bdo>
+{{< /doublecode >}}
+
+## THML Comments
+
+{{< lead >}}
+HTML comments are not displayed in the browser, but they can help document your HTML source code.
+{{< /lead >}}
+
+### Hide Content
+
+{{< doublecode lang="html" >}}
+<p>十三时记</p>
+<!-- <p>这里是被注释掉的段落</p> -->
+<p>无他，惟手熟尔。</p>
+{{< /doublecode >}}
+
+{{< doublecode lang="html" >}}
+<p>十三时记<p>
+<!--
+<p>这里是被注释掉的段落和一张图片：</p>
+<img border="0" src="/img/favicon.png" alt="Trulli">
+-->
+<p>无他，惟手熟尔。</p>
+{{< /doublecode >}}
+
+### Hide Inline Content
+
+{{< doublecode lang="html" >}}
+<p>你看不到<!-- 注释 -->这两个字</p>
+{{< /doublecode >}}
+
+
+## HTML Colors
+
+### Colors
+
+{{< doublecode lang="html" >}}
+<p style="color:Tomato;">番茄色</p>
+<p style="color:DodgerBlue;">道奇蓝</p>
+<p style="color:MediumSeaGreen;">暗海藻绿</p>
+{{< /doublecode >}}
+
+### RGB
+
+{{< doublecode lang="html" >}}
+<p style="background-color:rgb(60, 179, 113);">rgb(60, 179, 113)</p>
+<p style="background-color:rgb(255, 165, 0);">rgb(255, 165, 0)</p>
+<p style="background-color:rgb(106, 90, 205);">rgb(106, 90, 205)</p>
+<p style="background-color:rgb(60, 60, 60);">rgb(60, 60, 60)</p>
+<p style="background-color:rgb(100, 100, 100);">rgb(100, 100, 100)</p>
+<p style="background-color:rgb(140, 140, 140);">rgb(140, 140, 140)</p>
+<p style="background-color:rgb(180, 180, 180);">rgb(180, 180, 180)</p>
+<p style="background-color:rgb(220, 220, 220);">rgb(220, 220, 220)</p>
+<p style="background-color:rgba(255, 99, 71, 0);">rgba(255, 99, 71, 0)</p>
+<p style="background-color:rgba(255, 99, 71, 0.2);">rgba(255, 99, 71, 0.2)</p>
+<p style="background-color:rgba(255, 99, 71, 0.4);">rgba(255, 99, 71, 0.4)</p>
+<p style="background-color:rgba(255, 99, 71, 0.6);">rgba(255, 99, 71, 0.6)</p>
+<p style="background-color:rgba(255, 99, 71, 0.8);">rgba(255, 99, 71, 0.8)</p>
+<p style="background-color:rgba(255, 99, 71, 1);">rgba(255, 99, 71, 1)</p>
+{{< /doublecode >}}
+
+### HEX
+
+{{< doublecode lang="html" >}}
+<p style="background-color:#3cb371;">#3cb371</p>
+<p style="background-color:#ffa500;">#ffa500</p>
+<p style="background-color:#6a5acd;">#6a5acd</p>
+<p style="background-color:#404040;">#404040</p>
+<p style="background-color:#686868;">#686868</p>
+<p style="background-color:#a0a0a0;">#a0a0a0</p>
+<p style="background-color:#bebebe;">#bebebe</p>
+<p style="background-color:#dcdcdc;">#dcdcdc</p>
+<p style="background-color:#f8f8f8;">#f8f8f8</p>
+{{< /doublecode >}}
+
+### HSL
+
+{{< doublecode lang="html" >}}
+<p>调整饱和度：</p>
+<p style="background-color:hsl(0, 100%, 50%);">hsl(0, 100%, 50%)</p>
+<p style="background-color:hsl(0, 80%, 50%);">hsl(0, 80%, 50%)</p>
+<p style="background-color:hsl(0, 60%, 50%);">hsl(0, 60%, 50%)</p>
+<p style="background-color:hsl(0, 40%, 50%);">hsl(0, 40%, 50%)</p>
+<p style="background-color:hsl(0, 20%, 50%);">hsl(0, 20%, 50%)</p>
+<p style="background-color:hsl(0, 0%, 50%);">hsl(0, 0%, 50%)</p>
+<p>调整亮度：</p>
+<p style="background-color:hsl(0, 100%, 0%);">hsl(0, 100%, 0%)</p>
+<p style="background-color:hsl(0, 100%, 25%);">hsl(0, 100%, 25%)</p>
+<p style="background-color:hsl(0, 100%, 50%);">hsl(0, 100%, 50%)</p>
+<p style="background-color:hsl(0, 100%, 75%);">hsl(0, 100%, 75%)</p>
+<p style="background-color:hsl(0, 100%, 90%);">hsl(0, 100%, 90%)</p>
+<p style="background-color:hsl(0, 100%, 100%);">hsl(0, 100%, 100%)</p>
+<p>灰色阴影：</p>
+<p style="background-color:hsl(0, 0%, 20%);">hsl(0, 0%, 20%)</p>
+<p style="background-color:hsl(0, 0%, 30%);">hsl(0, 0%, 30%)</p>
+<p style="background-color:hsl(0, 0%, 40%);">hsl(0, 0%, 40%)</p>
+<p style="background-color:hsl(0, 0%, 60%);">hsl(0, 0%, 60%)</p>
+<p style="background-color:hsl(0, 0%, 70%);">hsl(0, 0%, 70%)</p>
+<p style="background-color:hsl(0, 0%, 90%);">hsl(0, 0%, 90%)</p>
+<p>HSLA：</p>
+<p style="background-color:hsla(9, 100%, 64%, 0);">hsla(9, 100%, 64%, 0)</p>
+<p style="background-color:hsla(9, 100%, 64%, 0.2);">hsla(9, 100%, 64%, 0.2)</p>
+<p style="background-color:hsla(9, 100%, 64%, 0.4);">hsla(9, 100%, 64%, 0.4)</p>
+<p style="background-color:hsla(9, 100%, 64%, 0.6);">hsla(9, 100%, 64%, 0.6)</p>
+<p style="background-color:hsla(9, 100%, 64%, 0.8);">hsla(9, 100%, 64%, 0.8)</p>
+<p style="background-color:hsla(9, 100%, 64%, 1);">hsla(9, 100%, 64%, 1)</p>
+{{< /doublecode >}}
