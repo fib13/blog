@@ -655,3 +655,31 @@ function myFunction() {
 {{< /doublecode >}}
 
 ### Backgroud Images
+
+{{< doublecode lang="html" >}}
+<iframe src="/learn-notes/html/code/background_cover.html" name="link_colors" style="border:none;" height=300px" width="100%" title="Link Colors"></iframe>
+{{< /doublecode >}}
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        background-image: url('/img/workplace.jpg');
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        background-size: cover;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>背景覆盖</h2>
+
+    <p>
+      图片会覆盖整个 <code>body</code> 元素。
+    </p>
+  </body>
+</html>
+```
+
