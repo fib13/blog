@@ -153,6 +153,22 @@ Hugo&Github Action&Github Pages 搭建个人博客
 <li><a href=#hsl>HSL</a></li>
 </ul>
 </li>
+<li><a href=#html-links>HTML Links</a>
+<ul>
+<li><a href=#links>Links</a></li>
+<li><a href=#link-colors>Link Colors</a></li>
+<li><a href=#link-buttons>Link Buttons</a></li>
+<li><a href=#link-bookmarks>Link Bookmarks</a></li>
+</ul>
+</li>
+<li><a href=#html-images>HTML Images</a>
+<ul>
+<li><a href=#width-and-height-or-style>Width and Height, or Style?</a></li>
+<li><a href=#image-floating>Image Floating</a></li>
+<li><a href=#image-map>Image Map</a></li>
+<li><a href=#backgroud-images>Backgroud Images</a></li>
+</ul>
+</li>
 </ul>
 </nav>
 </div>
@@ -228,6 +244,30 @@ Hugo&Github Action&Github Pages 搭建个人博客
 <li><a href=#rgb>RGB</a></li>
 <li><a href=#hex>HEX</a></li>
 <li><a href=#hsl>HSL</a></li>
+</ul>
+</li>
+<li><a href=#html-links>HTML Links</a>
+<ul>
+<li><a href=#links>Links</a>
+<ul>
+<li><a href=#the-target-attribute>The target Attribute</a></li>
+<li><a href=#use-an-image-as-a-link>Use an Image as a Link</a></li>
+<li><a href=#link-to-an-email-address>Link to an Email Address</a></li>
+<li><a href=#button-as-a-link>Button as a Link</a></li>
+<li><a href=#link-titles>Link Titles</a></li>
+</ul>
+</li>
+<li><a href=#link-colors>Link Colors</a></li>
+<li><a href=#link-buttons>Link Buttons</a></li>
+<li><a href=#link-bookmarks>Link Bookmarks</a></li>
+</ul>
+</li>
+<li><a href=#html-images>HTML Images</a>
+<ul>
+<li><a href=#width-and-height-or-style>Width and Height, or Style?</a></li>
+<li><a href=#image-floating>Image Floating</a></li>
+<li><a href=#image-map>Image Map</a></li>
+<li><a href=#backgroud-images>Backgroud Images</a></li>
 </ul>
 </li>
 </ul>
@@ -1212,6 +1252,379 @@ Copy
 </code></pre></div>
 </div>
 </div>
+<h2 id=html-links>HTML Links</h2>
+<p class=lead>
+Links are found in nearly all web pages. Links allow users to click their way from page to page.
+</p>
+<h3 id=links>Links</h3>
+<h4 id=the-target-attribute>The target Attribute</h4>
+<p>The <code>target</code> arrtibute can have one of the following values:</p>
+<ul>
+<li><code>_self</code> - Default. Opens the document in the same window/tab as it was clicked</li>
+<li><code>_blank</code> - Opens the document in a new window or tab</li>
+<li><code>_parent</code> - Opens the document in the parent frame</li>
+<li><code>_top</code> - Opens the document in the full body of the window</li>
+</ul>
+<div class="border border-light" style=border-width:3px!important>
+<div class="px-3 py-2">
+<a href=https://www.google.com/ target=_blank>十三时记</a>
+</div>
+</div>
+<div class=position-relative>
+<div class=position-absolute style=right:0>
+<button class="btn btn-light" data-clipboard-target=#clipboard_a082a40761>
+Copy
+</button>
+</div>
+<div id=clipboard_a082a40761>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>
+<span style=color:#111>&lt;</span><span style=color:#f92672>a</span> <span style=color:#75af00>href</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;https://www.google.com/&#34;</span> <span style=color:#75af00>target</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;_blank&#34;</span><span style=color:#111>&gt;</span>十三时记<span style=color:#111>&lt;/</span><span style=color:#f92672>a</span><span style=color:#111>&gt;</span>
+
+</code></pre></div>
+</div>
+</div>
+<h4 id=use-an-image-as-a-link>Use an Image as a Link</h4>
+<div class="border border-light" style=border-width:3px!important>
+<div class="px-3 py-2">
+<a href=https://www.google.com/ target=_blank>
+<img src=/img/favicon.png alt=主宰 style=width:42px;height:42px>
+</a>
+</div>
+</div>
+<div class=position-relative>
+<div class=position-absolute style=right:0>
+<button class="btn btn-light" data-clipboard-target=#clipboard_c366031176>
+Copy
+</button>
+</div>
+<div id=clipboard_c366031176>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>
+<span style=color:#111>&lt;</span><span style=color:#f92672>a</span> <span style=color:#75af00>href</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;https://www.google.com/&#34;</span> <span style=color:#75af00>target</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;_blank&#34;</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;</span><span style=color:#f92672>img</span> <span style=color:#75af00>src</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;/img/favicon.png&#34;</span> <span style=color:#75af00>alt</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;主宰&#34;</span> <span style=color:#75af00>style</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;width:42px;height:42px;&#34;</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>a</span><span style=color:#111>&gt;</span>
+
+</code></pre></div>
+</div>
+</div>
+<h4 id=link-to-an-email-address>Link to an Email Address</h4>
+<div class="border border-light" style=border-width:3px!important>
+<div class="px-3 py-2">
+<a href=mailto:jugg.gao@qq.com>点击发送邮件</a>
+</div>
+</div>
+<div class=position-relative>
+<div class=position-absolute style=right:0>
+<button class="btn btn-light" data-clipboard-target=#clipboard_042d74399f>
+Copy
+</button>
+</div>
+<div id=clipboard_042d74399f>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>
+<span style=color:#111>&lt;</span><span style=color:#f92672>a</span> <span style=color:#75af00>href</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;mailto:jugg.gao@qq.com&#34;</span><span style=color:#111>&gt;</span>点击发送邮件<span style=color:#111>&lt;/</span><span style=color:#f92672>a</span><span style=color:#111>&gt;</span>
+
+</code></pre></div>
+</div>
+</div>
+<h4 id=button-as-a-link>Button as a Link</h4>
+<div class="border border-light" style=border-width:3px!important>
+<div class="px-3 py-2">
+<button onclick="location='https://www.google.com'">谷歌搜索</button>
+</div>
+</div>
+<div class=position-relative>
+<div class=position-absolute style=right:0>
+<button class="btn btn-light" data-clipboard-target=#clipboard_4d53ec69cd>
+Copy
+</button>
+</div>
+<div id=clipboard_4d53ec69cd>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>
+<span style=color:#111>&lt;</span><span style=color:#f92672>button</span> <span style=color:#75af00>onclick</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;location=&#39;https://www.google.com&#39;&#34;</span><span style=color:#111>&gt;</span>谷歌搜索<span style=color:#111>&lt;/</span><span style=color:#f92672>button</span><span style=color:#111>&gt;</span>
+
+</code></pre></div>
+</div>
+</div>
+<h4 id=link-titles>Link Titles</h4>
+<div class="border border-light" style=border-width:3px!important>
+<div class="px-3 py-2">
+<a href=https://www.google.com title=点击去往谷歌搜索>谷歌搜索</a>
+</div>
+</div>
+<div class=position-relative>
+<div class=position-absolute style=right:0>
+<button class="btn btn-light" data-clipboard-target=#clipboard_93fb63fc37>
+Copy
+</button>
+</div>
+<div id=clipboard_93fb63fc37>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>
+<span style=color:#111>&lt;</span><span style=color:#f92672>a</span> <span style=color:#75af00>href</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;https://www.google.com&#34;</span> <span style=color:#75af00>title</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;点击去往谷歌搜索&#34;</span><span style=color:#111>&gt;</span>谷歌搜索<span style=color:#111>&lt;/</span><span style=color:#f92672>a</span><span style=color:#111>&gt;</span>
+
+</code></pre></div>
+</div>
+</div>
+<h3 id=link-colors>Link Colors</h3>
+<div class="border border-light" style=border-width:3px!important>
+<div class="px-3 py-2">
+<iframe src=/learn-notes/html/code/link_colors.html name=link_colors style=border:none height=30px width=100% title="Link Colors"></iframe>
+</div>
+</div>
+<div class=position-relative>
+<div class=position-absolute style=right:0>
+<button class="btn btn-light" data-clipboard-target=#clipboard_9a9e8bd1d6>
+Copy
+</button>
+</div>
+<div id=clipboard_9a9e8bd1d6>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>
+<span style=color:#111>&lt;</span><span style=color:#f92672>iframe</span> <span style=color:#75af00>src</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;/learn-notes/html/code/link_colors.html&#34;</span> <span style=color:#75af00>name</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;link_colors&#34;</span> <span style=color:#75af00>style</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;border:none;&#34;</span> <span style=color:#75af00>height</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;30px&#34;</span> <span style=color:#75af00>width</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;100%&#34;</span> <span style=color:#75af00>title</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;Link Colors&#34;</span><span style=color:#111>&gt;&lt;/</span><span style=color:#f92672>iframe</span><span style=color:#111>&gt;</span>
+
+</code></pre></div>
+</div>
+</div>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+<span style=color:#111>&lt;</span><span style=color:#f92672>html</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>head</span><span style=color:#111>&gt;</span>
+    <span style=color:#111>&lt;</span><span style=color:#f92672>style</span><span style=color:#111>&gt;</span>
+      <span style=color:#f92672>a</span><span style=color:#111>:</span><span style=color:#75af00>link</span> <span style=color:#111>{</span>
+        <span style=color:#00a8c8>color</span><span style=color:#111>:</span> <span style=color:#00a8c8>green</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>background-color</span><span style=color:#111>:</span> <span style=color:#00a8c8>transparent</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>text-decoration</span><span style=color:#111>:</span> <span style=color:#00a8c8>none</span><span style=color:#111>;</span>
+      <span style=color:#111>}</span>
+      <span style=color:#f92672>a</span><span style=color:#111>:</span><span style=color:#75af00>visited</span> <span style=color:#111>{</span>
+        <span style=color:#00a8c8>color</span><span style=color:#111>:</span> <span style=color:#00a8c8>pink</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>background-color</span><span style=color:#111>:</span> <span style=color:#00a8c8>transparent</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>text-decoration</span><span style=color:#111>:</span> <span style=color:#00a8c8>none</span><span style=color:#111>;</span>
+      <span style=color:#111>}</span>
+      <span style=color:#f92672>a</span><span style=color:#111>:</span><span style=color:#75af00>hover</span> <span style=color:#111>{</span>
+        <span style=color:#00a8c8>color</span><span style=color:#111>:</span> <span style=color:#00a8c8>red</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>background-color</span><span style=color:#111>:</span> <span style=color:#00a8c8>transparent</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>text-decoration</span><span style=color:#111>:</span> <span style=color:#00a8c8>underline</span><span style=color:#111>;</span>
+      <span style=color:#111>}</span>
+      <span style=color:#f92672>a</span><span style=color:#111>:</span><span style=color:#75af00>active</span> <span style=color:#111>{</span>
+        <span style=color:#00a8c8>color</span><span style=color:#111>:</span> <span style=color:#00a8c8>yellow</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>background-color</span><span style=color:#111>:</span> <span style=color:#00a8c8>transparent</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>text-decoration</span><span style=color:#111>:</span> <span style=color:#00a8c8>underline</span><span style=color:#111>;</span>
+      <span style=color:#111>}</span>
+    <span style=color:#111>&lt;/</span><span style=color:#f92672>style</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;/</span><span style=color:#f92672>head</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>body</span><span style=color:#111>&gt;</span>
+    <span style=color:#111>&lt;</span><span style=color:#f92672>a</span> <span style=color:#75af00>href</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;https://www.google.com&#34;</span> <span style=color:#75af00>target</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;_blank&#34;</span><span style=color:#111>&gt;</span>谷歌搜索<span style=color:#111>&lt;/</span><span style=color:#f92672>a</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;/</span><span style=color:#f92672>body</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>html</span><span style=color:#111>&gt;</span>
+</code></pre></div><h3 id=link-buttons>Link Buttons</h3>
+<div class="border border-light" style=border-width:3px!important>
+<div class="px-3 py-2">
+<iframe src=/learn-notes/html/code/link_buttons.html name=link_colors style=border:none height=80px width=100% title="Link Colors"></iframe>
+</div>
+</div>
+<div class=position-relative>
+<div class=position-absolute style=right:0>
+<button class="btn btn-light" data-clipboard-target=#clipboard_a6cfbf6de1>
+Copy
+</button>
+</div>
+<div id=clipboard_a6cfbf6de1>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>
+<span style=color:#111>&lt;</span><span style=color:#f92672>iframe</span> <span style=color:#75af00>src</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;/learn-notes/html/code/link_buttons.html&#34;</span> <span style=color:#75af00>name</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;link_colors&#34;</span> <span style=color:#75af00>style</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;border:none;&#34;</span> <span style=color:#75af00>height</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;80px&#34;</span> <span style=color:#75af00>width</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;100%&#34;</span> <span style=color:#75af00>title</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;Link Colors&#34;</span><span style=color:#111>&gt;&lt;/</span><span style=color:#f92672>iframe</span><span style=color:#111>&gt;</span>
+
+</code></pre></div>
+</div>
+</div>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+<span style=color:#111>&lt;</span><span style=color:#f92672>html</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>head</span><span style=color:#111>&gt;</span>
+    <span style=color:#111>&lt;</span><span style=color:#f92672>style</span><span style=color:#111>&gt;</span>
+      <span style=color:#f92672>a</span><span style=color:#111>:</span><span style=color:#75af00>link</span><span style=color:#f92672>,</span>
+      <span style=color:#f92672>a</span><span style=color:#111>:</span><span style=color:#75af00>visited</span> <span style=color:#111>{</span>
+        <span style=color:#00a8c8>background-color</span><span style=color:#111>:</span> <span style=color:#ae81ff>#f44336</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>color</span><span style=color:#111>:</span> <span style=color:#00a8c8>white</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>padding</span><span style=color:#111>:</span> <span style=color:#ae81ff>15</span><span style=color:#00a8c8>px</span> <span style=color:#ae81ff>25</span><span style=color:#00a8c8>px</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>text-align</span><span style=color:#111>:</span> <span style=color:#00a8c8>center</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>text-decoration</span><span style=color:#111>:</span> <span style=color:#00a8c8>none</span><span style=color:#111>;</span>
+        <span style=color:#00a8c8>display</span><span style=color:#111>:</span> <span style=color:#00a8c8>inline-block</span><span style=color:#111>;</span>
+      <span style=color:#111>}</span>
+
+      <span style=color:#f92672>a</span><span style=color:#111>:</span><span style=color:#75af00>hover</span><span style=color:#f92672>,</span>
+      <span style=color:#f92672>a</span><span style=color:#111>:</span><span style=color:#75af00>active</span> <span style=color:#111>{</span>
+        <span style=color:#00a8c8>background-color</span><span style=color:#111>:</span> <span style=color:#00a8c8>red</span><span style=color:#111>;</span>
+      <span style=color:#111>}</span>
+    <span style=color:#111>&lt;/</span><span style=color:#f92672>style</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;/</span><span style=color:#f92672>head</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>body</span><span style=color:#111>&gt;</span>
+    <span style=color:#111>&lt;</span><span style=color:#f92672>a</span> <span style=color:#75af00>href</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;https://www.google.com&#34;</span> <span style=color:#75af00>target</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;_blank&#34;</span><span style=color:#111>&gt;</span>谷歌搜索<span style=color:#111>&lt;/</span><span style=color:#f92672>a</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;/</span><span style=color:#f92672>body</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>html</span><span style=color:#111>&gt;</span>
+</code></pre></div><h3 id=link-bookmarks>Link Bookmarks</h3>
+<div class="border border-light" style=border-width:3px!important>
+<div class="px-3 py-2">
+<a href=#links>跳转至 Links</a>
+</div>
+</div>
+<div class=position-relative>
+<div class=position-absolute style=right:0>
+<button class="btn btn-light" data-clipboard-target=#clipboard_c0e2f6feaa>
+Copy
+</button>
+</div>
+<div id=clipboard_c0e2f6feaa>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>
+<span style=color:#111>&lt;</span><span style=color:#f92672>a</span> <span style=color:#75af00>href</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;#links&#34;</span><span style=color:#111>&gt;</span>跳转至 Links<span style=color:#111>&lt;/</span><span style=color:#f92672>a</span><span style=color:#111>&gt;</span>
+
+</code></pre></div>
+</div>
+</div>
+<h2 id=html-images>HTML Images</h2>
+<h3 id=width-and-height-or-style>Width and Height, or Style?</h3>
+<p>However, we suggest using the <code>style</code> attribute. It prevents styles sheets from changing the size of images:</p>
+<div class="border border-light" style=border-width:3px!important>
+<div class="px-3 py-2">
+<iframe src=/learn-notes/html/code/image_style.html name=link_colors style=border:none height=160px width=100% title="Link Colors"></iframe>
+</div>
+</div>
+<div class=position-relative>
+<div class=position-absolute style=right:0>
+<button class="btn btn-light" data-clipboard-target=#clipboard_0d1d5b09d0>
+Copy
+</button>
+</div>
+<div id=clipboard_0d1d5b09d0>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>
+<span style=color:#111>&lt;</span><span style=color:#f92672>iframe</span> <span style=color:#75af00>src</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;/learn-notes/html/code/image_style.html&#34;</span> <span style=color:#75af00>name</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;link_colors&#34;</span> <span style=color:#75af00>style</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;border:none;&#34;</span> <span style=color:#75af00>height</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;160px&#34;</span> <span style=color:#75af00>width</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;100%&#34;</span> <span style=color:#75af00>title</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;Link Colors&#34;</span><span style=color:#111>&gt;&lt;/</span><span style=color:#f92672>iframe</span><span style=color:#111>&gt;</span>
+
+</code></pre></div>
+</div>
+</div>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html><span style=color:#75715e>&lt;!DOCTYPE html&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>html</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;</span><span style=color:#f92672>head</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>style</span><span style=color:#111>&gt;</span>
+    <span style=color:#f92672>img</span> <span style=color:#111>{</span>
+      <span style=color:#00a8c8>width</span><span style=color:#111>:</span> <span style=color:#ae81ff>100</span><span style=color:#00a8c8>%</span><span style=color:#111>;</span>
+    <span style=color:#111>}</span>
+  <span style=color:#111>&lt;/</span><span style=color:#f92672>style</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>head</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;</span><span style=color:#f92672>body</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>img</span> <span style=color:#75af00>src</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;/img/favicon.png&#34;</span> <span style=color:#75af00>alt</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;主宰&#34;</span> <span style=color:#75af00>width</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;64&#34;</span> <span style=color:#75af00>height</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;64&#34;</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>img</span> <span style=color:#75af00>src</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;/img/favicon.png&#34;</span> <span style=color:#75af00>alt</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;主宰&#34;</span> <span style=color:#75af00>style</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;width:64px;height:64px;&#34;</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>body</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;</span><span style=color:#f92672>html</span><span style=color:#111>&gt;</span>
+</code></pre></div><h3 id=image-floating>Image Floating</h3>
+<div class="border border-light" style=border-width:3px!important>
+<div class="px-3 py-2">
+<p><img src=/img/favicon.png alt=主宰 style=float:right;width:42px;height:42px>主宰</p>
+<p><img src=/img/favicon.png alt=主宰 style=float:left;width:42px;height:42px>主宰</p>
+</div>
+</div>
+<div class=position-relative>
+<div class=position-absolute style=right:0>
+<button class="btn btn-light" data-clipboard-target=#clipboard_2bc862ae54>
+Copy
+</button>
+</div>
+<div id=clipboard_2bc862ae54>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>
+<span style=color:#111>&lt;</span><span style=color:#f92672>p</span><span style=color:#111>&gt;&lt;</span><span style=color:#f92672>img</span> <span style=color:#75af00>src</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;/img/favicon.png&#34;</span> <span style=color:#75af00>alt</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;主宰&#34;</span> <span style=color:#75af00>style</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;float:right;width:42px;height:42px;&#34;</span><span style=color:#111>&gt;</span>主宰<span style=color:#111>&lt;/</span><span style=color:#f92672>p</span><span style=color:#111>&gt;</span>
+
+<span style=color:#111>&lt;</span><span style=color:#f92672>p</span><span style=color:#111>&gt;&lt;</span><span style=color:#f92672>img</span> <span style=color:#75af00>src</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;/img/favicon.png&#34;</span> <span style=color:#75af00>alt</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;主宰&#34;</span> <span style=color:#75af00>style</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;float:left;width:42px;height:42px;&#34;</span><span style=color:#111>&gt;</span>主宰<span style=color:#111>&lt;/</span><span style=color:#f92672>p</span><span style=color:#111>&gt;</span>
+
+</code></pre></div>
+</div>
+</div>
+<h3 id=image-map>Image Map</h3>
+<ul>
+<li><code>rect</code> - defines a rectangular region</li>
+<li><code>circle</code> - defines a circular region</li>
+<li><code>poly</code> - defines a polygonal region</li>
+<li><code>default</code> - defines the entire region</li>
+</ul>
+<div class="border border-light" style=border-width:3px!important>
+<div class="px-3 py-2">
+<img src=/img/workplace.jpg alt=Workplace usemap=#workmap>
+<map name=workmap>
+<area shape=rect coords=34,44,270,350 alt=Computer href=https://en.wikipedia.org/wiki/Computer target=_blank>
+<area shape=rect coords=290,172,333,250 alt=Phone href=https://en.wikipedia.org/wiki/Mobile_phone target=_blank>
+<area shape=circle coords=337,300,44 alt=Coffee href=https://en.wikipedia.org/wiki/Coffee target=_blank>
+</map>
+</div>
+</div>
+<div class=position-relative>
+<div class=position-absolute style=right:0>
+<button class="btn btn-light" data-clipboard-target=#clipboard_88dbeda93f>
+Copy
+</button>
+</div>
+<div id=clipboard_88dbeda93f>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>
+<span style=color:#111>&lt;</span><span style=color:#f92672>img</span> <span style=color:#75af00>src</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;/img/workplace.jpg&#34;</span> <span style=color:#75af00>alt</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;Workplace&#34;</span> <span style=color:#75af00>usemap</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;#workmap&#34;</span><span style=color:#111>&gt;</span>
+
+<span style=color:#111>&lt;</span><span style=color:#f92672>map</span> <span style=color:#75af00>name</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;workmap&#34;</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>area</span> <span style=color:#75af00>shape</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;rect&#34;</span> <span style=color:#75af00>coords</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;34,44,270,350&#34;</span> <span style=color:#75af00>alt</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;Computer&#34;</span> <span style=color:#75af00>href</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;https://en.wikipedia.org/wiki/Computer&#34;</span> <span style=color:#75af00>target</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;_blank&#34;</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>area</span> <span style=color:#75af00>shape</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;rect&#34;</span> <span style=color:#75af00>coords</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;290,172,333,250&#34;</span> <span style=color:#75af00>alt</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;Phone&#34;</span> <span style=color:#75af00>href</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;https://en.wikipedia.org/wiki/Mobile_phone&#34;</span> <span style=color:#75af00>target</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;_blank&#34;</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>area</span> <span style=color:#75af00>shape</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;circle&#34;</span> <span style=color:#75af00>coords</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;337,300,44&#34;</span> <span style=color:#75af00>alt</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;Coffee&#34;</span> <span style=color:#75af00>href</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;https://en.wikipedia.org/wiki/Coffee&#34;</span> <span style=color:#75af00>target</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;_blank&#34;</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>map</span><span style=color:#111>&gt;</span>
+
+</code></pre></div>
+</div>
+</div>
+<div class="border border-light" style=border-width:3px!important>
+<div class="px-3 py-2">
+<img src=/img/frenchfood.jpg alt="French Food" usemap=#foodmap width=450 height=675>
+<map name=foodmap>
+<area shape=poly coords=140,121,181,116,204,160,204,222,191,270,140,329,85,355,58,352,37,322,40,259,103,161,128,147 href=https://en.wikipedia.org/wiki/Croissant target=_blank>
+</map>
+</div>
+</div>
+<div class=position-relative>
+<div class=position-absolute style=right:0>
+<button class="btn btn-light" data-clipboard-target=#clipboard_d92ee48acd>
+Copy
+</button>
+</div>
+<div id=clipboard_d92ee48acd>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>
+<span style=color:#111>&lt;</span><span style=color:#f92672>img</span> <span style=color:#75af00>src</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;/img/frenchfood.jpg&#34;</span> <span style=color:#75af00>alt</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;French Food&#34;</span> <span style=color:#75af00>usemap</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;#foodmap&#34;</span> <span style=color:#75af00>width</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;450&#34;</span> <span style=color:#75af00>height</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;675&#34;</span><span style=color:#111>&gt;</span>
+
+<span style=color:#111>&lt;</span><span style=color:#f92672>map</span> <span style=color:#75af00>name</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;foodmap&#34;</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>area</span> <span style=color:#75af00>shape</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;poly&#34;</span> <span style=color:#75af00>coords</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;140,121,181,116,204,160,204,222,191,270,140,329,85,355,58,352,37,322,40,259,103,161,128,147&#34;</span> <span style=color:#75af00>href</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;https://en.wikipedia.org/wiki/Croissant&#34;</span> <span style=color:#75af00>target</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;_blank&#34;</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>map</span><span style=color:#111>&gt;</span>
+
+</code></pre></div>
+</div>
+</div>
+<div class="border border-light" style=border-width:3px!important>
+<div class="px-3 py-2">
+<img src=/img/workplace.jpg alt=Workplace usemap=#workplace width=400 height=379>
+<map name=workplace>
+<area shape=circle coords=337,300,44 onclick=myFunction()>
+</map>
+<script>function myFunction(){alert("You clicked the coffee cup!")}</script>
+</div>
+</div>
+<div class=position-relative>
+<div class=position-absolute style=right:0>
+<button class="btn btn-light" data-clipboard-target=#clipboard_9bc75ad630>
+Copy
+</button>
+</div>
+<div id=clipboard_9bc75ad630>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-html data-lang=html>
+<span style=color:#111>&lt;</span><span style=color:#f92672>img</span> <span style=color:#75af00>src</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;/img/workplace.jpg&#34;</span> <span style=color:#75af00>alt</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;Workplace&#34;</span> <span style=color:#75af00>usemap</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;#workplace&#34;</span> <span style=color:#75af00>width</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;400&#34;</span> <span style=color:#75af00>height</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;379&#34;</span><span style=color:#111>&gt;</span>
+
+<span style=color:#111>&lt;</span><span style=color:#f92672>map</span> <span style=color:#75af00>name</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;workplace&#34;</span><span style=color:#111>&gt;</span>
+  <span style=color:#111>&lt;</span><span style=color:#f92672>area</span> <span style=color:#75af00>shape</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;circle&#34;</span> <span style=color:#75af00>coords</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;337,300,44&#34;</span> <span style=color:#75af00>onclick</span><span style=color:#f92672>=</span><span style=color:#d88200>&#34;myFunction()&#34;</span><span style=color:#111>&gt;</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>map</span><span style=color:#111>&gt;</span>
+
+<span style=color:#111>&lt;</span><span style=color:#f92672>script</span><span style=color:#111>&gt;</span>
+<span style=color:#00a8c8>function</span> <span style=color:#75af00>myFunction</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+  <span style=color:#75af00>alert</span><span style=color:#111>(</span><span style=color:#d88200>&#34;You clicked the coffee cup!&#34;</span><span style=color:#111>);</span>
+<span style=color:#111>}</span>
+<span style=color:#111>&lt;/</span><span style=color:#f92672>script</span><span style=color:#111>&gt;</span>
+
+</code></pre></div>
+</div>
+</div>
+<h3 id=backgroud-images>Backgroud Images</h3>
 <div class=row><div class="position-relative mx-auto col-lg-9">
 <div class="bg-primary overflow-hidden p-3 mt-5 shadow">
 <h4 class="text-white text-center">阅读更多</h4>
