@@ -50,6 +50,21 @@ weight = 1
   - [RGB](#rgb)
   - [HEX](#hex)
   - [HSL](#hsl)
+- [HTML Links](#html-links)
+  - [Links](#links)
+    - [The target Attribute](#the-target-attribute)
+    - [Use an Image as a Link](#use-an-image-as-a-link)
+    - [Link to an Email Address](#link-to-an-email-address)
+    - [Button as a Link](#button-as-a-link)
+    - [Link Titles](#link-titles)
+  - [Link Colors](#link-colors)
+  - [Link Buttons](#link-buttons)
+  - [Link Bookmarks](#link-bookmarks)
+- [HTML Images](#html-images)
+  - [Width and Height, or Style?](#width-and-height-or-style)
+  - [Image Floating](#image-floating)
+  - [Image Map](#image-map)
+  - [Backgroud Images](#backgroud-images)
 
 ## HTML Attributes
 
@@ -439,3 +454,204 @@ HTML comments are not displayed in the browser, but they can help document your 
 <p style="background-color:hsla(9, 100%, 64%, 0.8);">hsla(9, 100%, 64%, 0.8)</p>
 <p style="background-color:hsla(9, 100%, 64%, 1);">hsla(9, 100%, 64%, 1)</p>
 {{< /doublecode >}}
+
+## HTML Links
+
+{{< lead >}}
+Links are found in nearly all web pages. Links allow users to click their way from page to page.
+{{< /lead >}}
+
+### Links
+
+#### The target Attribute
+
+The `target` arrtibute can have one of the following values:
+- `_self` - Default. Opens the document in the same window/tab as it was clicked
+- `_blank` - Opens the document in a new window or tab
+- `_parent` - Opens the document in the parent frame
+- `_top` - Opens the document in the full body of the window
+
+{{< doublecode lang="html" >}}
+<a href="https://www.google.com/" target="_blank">十三时记</a>
+{{< /doublecode >}}
+
+#### Use an Image as a Link
+
+{{< doublecode lang="html" >}}
+<a href="https://www.google.com/" target="_blank">
+<img src="/img/favicon.png" alt="主宰" style="width:42px;height:42px;">
+</a>
+{{< /doublecode >}}
+
+#### Link to an Email Address
+
+{{< doublecode lang="html" >}}
+<a href="mailto:jugg.gao@qq.com">点击发送邮件</a>
+{{< /doublecode >}}
+
+#### Button as a Link
+
+{{< doublecode lang="html" >}}
+<button onclick="location='https://www.google.com'">谷歌搜索</button>
+{{< /doublecode >}}
+
+#### Link Titles
+
+{{< doublecode lang="html" >}}
+<a href="https://www.google.com" title="点击去往谷歌搜索">谷歌搜索</a>
+{{< /doublecode >}}
+
+### Link Colors
+
+{{< doublecode lang="html" >}}
+<iframe src="/learn-notes/html/code/link_colors.html" name="link_colors" style="border:none;" height="30px" width="100%" title="Link Colors"></iframe>
+{{< /doublecode >}}
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      a:link {
+        color: green;
+        background-color: transparent;
+        text-decoration: none;
+      }
+      a:visited {
+        color: pink;
+        background-color: transparent;
+        text-decoration: none;
+      }
+      a:hover {
+        color: red;
+        background-color: transparent;
+        text-decoration: underline;
+      }
+      a:active {
+        color: yellow;
+        background-color: transparent;
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="https://www.google.com" target="_blank">谷歌搜索</a>
+  </body>
+</html>
+```
+
+### Link Buttons
+
+{{< doublecode lang="html" >}}
+<iframe src="/learn-notes/html/code/link_buttons.html" name="link_colors" style="border:none;" height="80px" width="100%" title="Link Colors"></iframe>
+{{< /doublecode >}}
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      a:link,
+      a:visited {
+        background-color: #f44336;
+        color: white;
+        padding: 15px 25px;
+        text-align: center;
+        text-decoration: none;
+        display: inline-block;
+      }
+
+      a:hover,
+      a:active {
+        background-color: red;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="https://www.google.com" target="_blank">谷歌搜索</a>
+  </body>
+</html>
+```
+
+### Link Bookmarks
+
+{{< doublecode lang="html" >}}
+<a href="#links">跳转至 Links</a>
+{{< /doublecode >}}
+
+## HTML Images
+
+### Width and Height, or Style?
+
+However, we suggest using the `style` attribute. It prevents styles sheets from changing the size of images:
+
+{{< doublecode lang="html" >}}
+<iframe src="/learn-notes/html/code/image_style.html" name="link_colors" style="border:none;" height="160px" width="100%" title="Link Colors"></iframe>
+{{< /doublecode >}}
+
+```html
+<!DOCTYPE html>
+</html>
+<head>
+  <style>
+    img {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <img src="/img/favicon.png" alt="主宰" width="64" height="64">
+  <img src="/img/favicon.png" alt="主宰" style="width:64px;height:64px;">
+</body>
+<html>
+```
+
+### Image Floating
+
+{{< doublecode lang="html" >}}
+<p><img src="/img/favicon.png" alt="主宰" style="float:right;width:42px;height:42px;">主宰</p>
+
+<p><img src="/img/favicon.png" alt="主宰" style="float:left;width:42px;height:42px;">主宰</p>
+{{< /doublecode >}}
+
+### Image Map
+
+- `rect` - defines a rectangular region
+- `circle` - defines a circular region
+- `poly` - defines a polygonal region
+- `default` - defines the entire region
+
+{{< doublecode lang="html" >}}
+<img src="/img/workplace.jpg" alt="Workplace" usemap="#workmap">
+
+<map name="workmap">
+  <area shape="rect" coords="34,44,270,350" alt="Computer" href="https://en.wikipedia.org/wiki/Computer" target="_blank">
+  <area shape="rect" coords="290,172,333,250" alt="Phone" href="https://en.wikipedia.org/wiki/Mobile_phone" target="_blank">
+  <area shape="circle" coords="337,300,44" alt="Coffee" href="https://en.wikipedia.org/wiki/Coffee" target="_blank">
+</map>
+{{< /doublecode >}}
+
+
+{{< doublecode lang="html" >}}
+<img src="/img/frenchfood.jpg" alt="French Food" usemap="#foodmap" width="450" height="675">
+
+<map name="foodmap">
+  <area shape="poly" coords="140,121,181,116,204,160,204,222,191,270,140,329,85,355,58,352,37,322,40,259,103,161,128,147" href="https://en.wikipedia.org/wiki/Croissant" target="_blank">
+</map>
+{{< /doublecode >}}
+
+{{< doublecode lang="html" >}}
+<img src="/img/workplace.jpg" alt="Workplace" usemap="#workplace" width="400" height="379">
+
+<map name="workplace">
+  <area shape="circle" coords="337,300,44" onclick="myFunction()">
+</map>
+
+<script>
+function myFunction() {
+  alert("You clicked the coffee cup!");
+}
+</script>
+{{< /doublecode >}}
+
+### Backgroud Images
