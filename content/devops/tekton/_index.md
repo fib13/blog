@@ -1,11 +1,11 @@
 +++
-title = "操作指南"
+title = "DevOps"
 description = ""
-weight = 1
+weight = 3
 +++
 
 {{< lead >}}
-好记性不如烂笔头。
+Tekton CICD
 {{< /lead >}}
 
 {{< childpages >}}

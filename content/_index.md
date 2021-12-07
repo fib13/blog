@@ -13,21 +13,6 @@ description = ""
 	<div class="col-md-4">
 		<div class="card flex-row border-0">
 			<div class="mt-3">
-				<span class="fas fa-book-reader fa-2x text-primary"></span>
-			</div>
-			<div class="card-body pl-2">
-				<h5 class="card-title">
-					学习笔记
-				</h5>
-				<p class="card-text text-muted">
-                    终身学习，必有回响
-				</p>
-			</div>
-		</div>
-	</div>
-	<div class="col-md-4">
-		<div class="card flex-row border-0">
-			<div class="mt-3">
 				<span class="fas fa-user-cog fa-2x text-primary"></span>
 			</div>
 			<div class="card-body pl-2">
