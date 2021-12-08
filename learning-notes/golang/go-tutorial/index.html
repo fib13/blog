@@ -108,14 +108,76 @@ Tekton 实践：安装
 <div class="docs-toc large order-lg-2 order-md-0 order-xs-1 col-12 col-lg-2 col-xl-2 position-sticky border-left"><div class=docs-toc>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#go-安装>Go 安装</a></li>
+<li><a href=#教程>教程：</a></li>
+<li><a href=#教程创建一个-go-模块>教程：创建一个 Go 模块</a>
+<ul>
+<li><a href=#创建模块>创建模块</a></li>
+<li><a href=#调用其他模块>调用其他模块</a></li>
+</ul>
+</li>
 </ul>
 </nav>
 </div>
 </div>
 <div class="main col-12 order-1 col-md-9 col-lg-10 col-xl-8 py-3">
 <h1>Golang 教程</h1>
-<h2 id=go-安装>Go 安装</h2>
+<h2 id=教程>教程：</h2>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir hello
+<span style=color:#111>cd</span> hello
+
+go mod init example/hello
+vim hello.go
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#75af00>main</span>
+
+<span style=color:#f92672>import</span> <span style=color:#d88200>&#34;fmt&#34;</span>
+
+<span style=color:#00a8c8>func</span> <span style=color:#75af00>main</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+    <span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Println</span><span style=color:#111>(</span><span style=color:#d88200>&#34;Hello, World!&#34;</span><span style=color:#111>)</span>
+<span style=color:#111>}</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>go run .
+</code></pre></div><p>引用外部包。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#75af00>main</span>
+
+<span style=color:#f92672>import</span> <span style=color:#d88200>&#34;fmt&#34;</span>
+
+<span style=color:#f92672>import</span> <span style=color:#d88200>&#34;rsc.io/quote&#34;</span>
+
+<span style=color:#00a8c8>func</span> <span style=color:#75af00>main</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+    <span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Println</span><span style=color:#111>(</span><span style=color:#75af00>quote</span><span style=color:#111>.</span><span style=color:#75af00>Go</span><span style=color:#111>())</span>
+<span style=color:#111>}</span>
+</code></pre></div><p>下载外部包，并在 <code>go.mod</code> 中添加依赖以及生成认证文件 <code>go.sum</code>。</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>go mod tidy
+</code></pre></div><h2 id=教程创建一个-go-模块>教程：创建一个 Go 模块</h2>
+<h3 id=创建模块>创建模块</h3>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir greetings
+<span style=color:#111>cd</span> greetings/
+
+go mod init example.com/greetings
+
+vim greetings.go
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#75af00>greetings</span>
+
+<span style=color:#f92672>import</span> <span style=color:#d88200>&#34;fmt&#34;</span>
+
+<span style=color:#75715e>// Hello returns a greeting for the named person
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>Hello</span><span style=color:#111>(</span><span style=color:#75af00>name</span> <span style=color:#00a8c8>string</span><span style=color:#111>)</span> <span style=color:#00a8c8>string</span> <span style=color:#111>{</span>
+    <span style=color:#75715e>// Return a greeting that embeds the the in a message.
+</span><span style=color:#75715e></span>    <span style=color:#75af00>message</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Sprintf</span><span style=color:#111>(</span><span style=color:#d88200>&#34;Hi, %v. Welcome!&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>name</span><span style=color:#111>)</span>
+    <span style=color:#00a8c8>return</span> <span style=color:#75af00>message</span>
+<span style=color:#111>}</span>
+</code></pre></div><h3 id=调用其他模块>调用其他模块</h3>
+<p>此时目录结构为：</p>
+<pre tabindex=0><code>.
+├── greetings
+└── hello
+</code></pre><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#111>cd</span> hello
+rm -rf *
+
+go mod init example.com/hello
+
+vim hello.go
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>
+</code></pre></div>
 <div class=row><div class="position-relative mx-auto col-lg-9">
 <div class="bg-primary overflow-hidden p-3 mt-5 shadow">
 <h4 class="text-white text-center">阅读更多</h4>

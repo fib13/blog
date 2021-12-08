@@ -111,6 +111,8 @@ Tekton 实践：安装
 <li><a href=#开发环境>开发环境</a></li>
 <li><a href=#安装>安装</a></li>
 <li><a href=#环境>环境</a></li>
+<li><a href=#编辑器>编辑器</a></li>
+<li><a href=#语法检测>语法检测</a></li>
 </ul>
 </nav>
 </div>
@@ -125,13 +127,23 @@ Tekton 实践：安装
 
 rm -rf /usr/local/go <span style=color:#f92672>&amp;&amp;</span> tar -C /usr/local -xzf go1.17.4.linux-amd64.tar.gz
 
-<span style=color:#111>echo</span> -e <span style=color:#d88200>&#34;\nexport PATH=\$PATH:/usr/local/go/bin&#34;</span> <span style=color:#111>|</span> tee -a ~/.profile
+<span style=color:#111>echo</span> -e <span style=color:#d88200>&#34;\nexport PATH=\$PATH:/usr/local/go/bin:\$GOPATH/bin&#34;</span> <span style=color:#111>|</span> tee -a ~/.profile
 
 <span style=color:#111>source</span> ~/.profile
 
 go version
 </code></pre></div><h2 id=环境>环境</h2>
-<pre tabindex=0><code></code></pre>
+<pre tabindex=0><code>go env -w GO111MODULE=on
+
+go env -w GOPROXY=https://goproxy.io,direct
+</code></pre><h2 id=编辑器>编辑器</h2>
+<p>安装 <a href=https://github.com/golang/vscode-go>vscode-go</a> 插件。</p>
+<p>再安装开发工具。</p>
+<p><img src=https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211208214119.png alt=20211208214119></p>
+<p><img src=https://cdn.jsdelivr.net/gh/jugggao/image-hosting/images_for_blogs/20211208214445.png alt=20211208214445></p>
+<h2 id=语法检测>语法检测</h2>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+</code></pre></div>
 <div class=row><div class="position-relative mx-auto col-lg-9">
 <div class="bg-primary overflow-hidden p-3 mt-5 shadow">
 <h4 class="text-white text-center">阅读更多</h4>
