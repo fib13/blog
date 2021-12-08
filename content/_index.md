@@ -13,6 +13,21 @@ description = ""
 	<div class="col-md-4">
 		<div class="card flex-row border-0">
 			<div class="mt-3">
+				<span class="fas fa-book-reader fa-2x text-primary"></span>
+			</div>
+			<div class="card-body pl-2">
+				<h5 class="card-title">
+					学习笔记
+				</h5>
+				<p class="card-text text-muted">
+                    马上学不动了
+				</p>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-4">
+		<div class="card flex-row border-0">
+			<div class="mt-3">
 				<span class="fas fa-user-cog fa-2x text-primary"></span>
 			</div>
 			<div class="card-body pl-2">
@@ -20,7 +35,7 @@ description = ""
 					操作指南
 				</h5>
 				<p class="card-text text-muted">
-                    软件配置、工具使用等
+                    已经记不住了
 				</p>
 			</div>
 		</div>
@@ -35,7 +50,7 @@ description = ""
 					问题排查
 				</h5>
 				<p class="card-text text-muted">
-                    实际环境遇见的问题解决步骤
+                    再相见也可能不认识了
 				</p>
 			</div>
 		</div>

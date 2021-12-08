@@ -1,5 +1,5 @@
 +++
-title = "DevOps"
+title = "Tekton CICD"
 description = ""
 weight = 3
 +++
