@@ -1,7 +1,7 @@
 +++
 title = "Go 安装"
 description = ""
-weight = 2
+weight = 1
 +++
 
 ## 开发环境
