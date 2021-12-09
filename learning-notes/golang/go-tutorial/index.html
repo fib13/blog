@@ -108,11 +108,16 @@ Tekton 实践：安装
 <div class="docs-toc large order-lg-2 order-md-0 order-xs-1 col-12 col-lg-2 col-xl-2 position-sticky border-left"><div class=docs-toc>
 <nav id=TableOfContents>
 <ul>
-<li><a href=#教程>教程：</a></li>
+<li><a href=#教程开始>教程：开始</a></li>
 <li><a href=#教程创建一个-go-模块>教程：创建一个 Go 模块</a>
 <ul>
 <li><a href=#创建模块>创建模块</a></li>
 <li><a href=#调用其他模块>调用其他模块</a></li>
+<li><a href=#错误处理>错误处理</a></li>
+<li><a href=#随机问候>随机问候</a></li>
+<li><a href=#多人问候>多人问候</a></li>
+<li><a href=#测试>测试</a></li>
+<li><a href=#编译安装>编译安装</a></li>
 </ul>
 </li>
 </ul>
@@ -121,7 +126,7 @@ Tekton 实践：安装
 </div>
 <div class="main col-12 order-1 col-md-9 col-lg-10 col-xl-8 py-3">
 <h1>Golang 教程</h1>
-<h2 id=教程>教程：</h2>
+<h2 id=教程开始>教程：开始</h2>
 <div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir hello
 <span style=color:#111>cd</span> hello
 
@@ -176,7 +181,225 @@ rm -rf *
 go mod init example.com/hello
 
 vim hello.go
-</code></pre></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#75af00>main</span>
+
+<span style=color:#f92672>import</span> <span style=color:#111>(</span>
+	<span style=color:#d88200>&#34;fmt&#34;</span>
+
+	<span style=color:#d88200>&#34;example.com/greetings&#34;</span>
+<span style=color:#111>)</span>
+
+<span style=color:#00a8c8>func</span> <span style=color:#75af00>main</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+	<span style=color:#75715e>// Get a greeting message and print it.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>message</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>greetings</span><span style=color:#111>.</span><span style=color:#75af00>Hello</span><span style=color:#111>(</span><span style=color:#d88200>&#34;Gladys&#34;</span><span style=color:#111>)</span>
+	<span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Println</span><span style=color:#111>(</span><span style=color:#75af00>message</span><span style=color:#111>)</span>
+<span style=color:#111>}</span>
+</code></pre></div><p>重定向 Go 模块路径并添加依赖：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>go mod edit -replace example.com/greetings<span style=color:#f92672>=</span>../greetings
+
+go mod tidy
+</code></pre></div><p>运行：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>go run .
+</code></pre></div><h3 id=错误处理>错误处理</h3>
+<p><code>greetings.go</code>：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#75af00>greetings</span>
+
+<span style=color:#f92672>import</span> <span style=color:#111>(</span>
+	<span style=color:#d88200>&#34;errors&#34;</span>
+	<span style=color:#d88200>&#34;fmt&#34;</span>
+<span style=color:#111>)</span>
+
+<span style=color:#75715e>// Hello returns a greeting for the named person
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>Hello</span><span style=color:#111>(</span><span style=color:#75af00>name</span> <span style=color:#00a8c8>string</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#00a8c8>string</span><span style=color:#111>,</span> <span style=color:#00a8c8>error</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#75715e>// If no name was given, return an error with a message.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>if</span> <span style=color:#75af00>name</span> <span style=color:#f92672>==</span> <span style=color:#d88200>&#34;&#34;</span> <span style=color:#111>{</span>
+		<span style=color:#00a8c8>return</span> <span style=color:#d88200>&#34;&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>errors</span><span style=color:#111>.</span><span style=color:#75af00>New</span><span style=color:#111>(</span><span style=color:#d88200>&#34;empty name&#34;</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+
+	<span style=color:#75715e>// If a name was received, Return a greeting that embeds the the
+</span><span style=color:#75715e></span>	<span style=color:#75715e>// in a message.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>message</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Sprintf</span><span style=color:#111>(</span><span style=color:#d88200>&#34;Hi, %v. Welcome!&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>name</span><span style=color:#111>)</span>
+	<span style=color:#00a8c8>return</span> <span style=color:#75af00>message</span><span style=color:#111>,</span> <span style=color:#00a8c8>nil</span>
+<span style=color:#111>}</span>
+</code></pre></div><p><code>hello.go</code>：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#75af00>main</span>
+
+<span style=color:#f92672>import</span> <span style=color:#111>(</span>
+	<span style=color:#d88200>&#34;fmt&#34;</span>
+	<span style=color:#d88200>&#34;log&#34;</span>
+
+	<span style=color:#d88200>&#34;example.com/greetings&#34;</span>
+<span style=color:#111>)</span>
+
+<span style=color:#00a8c8>func</span> <span style=color:#75af00>main</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+	<span style=color:#75715e>// Set properties of the predefined Logger, including the log
+</span><span style=color:#75715e></span>	<span style=color:#75715e>// entry prefix and a flag to disable printing the time, source
+</span><span style=color:#75715e></span>	<span style=color:#75715e>// file, and line number.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>log</span><span style=color:#111>.</span><span style=color:#75af00>SetPrefix</span><span style=color:#111>(</span><span style=color:#d88200>&#34;greetings: &#34;</span><span style=color:#111>)</span>
+	<span style=color:#75af00>log</span><span style=color:#111>.</span><span style=color:#75af00>SetFlags</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+
+	<span style=color:#75715e>// Request a greeting message.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>message</span><span style=color:#111>,</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>greetings</span><span style=color:#111>.</span><span style=color:#75af00>Hello</span><span style=color:#111>(</span><span style=color:#d88200>&#34;&#34;</span><span style=color:#111>)</span>
+	<span style=color:#75715e>// If an error was returned, print it to the console and exit the program.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#75af00>log</span><span style=color:#111>.</span><span style=color:#75af00>Fatal</span><span style=color:#111>(</span><span style=color:#75af00>err</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+
+	<span style=color:#75715e>// If no error was returned, print the returned message to the massage.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Println</span><span style=color:#111>(</span><span style=color:#75af00>message</span><span style=color:#111>)</span>
+<span style=color:#111>}</span>
+</code></pre></div><h3 id=随机问候>随机问候</h3>
+<p><code>greetings.go</code>:</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#75af00>greetings</span>
+
+<span style=color:#f92672>import</span> <span style=color:#111>(</span>
+	<span style=color:#d88200>&#34;errors&#34;</span>
+	<span style=color:#d88200>&#34;fmt&#34;</span>
+	<span style=color:#d88200>&#34;math/rand&#34;</span>
+	<span style=color:#d88200>&#34;time&#34;</span>
+<span style=color:#111>)</span>
+
+<span style=color:#75715e>// Hello returns a greeting for the named person
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>Hello</span><span style=color:#111>(</span><span style=color:#75af00>name</span> <span style=color:#00a8c8>string</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#00a8c8>string</span><span style=color:#111>,</span> <span style=color:#00a8c8>error</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#75715e>// If no name was given, return an error with a message.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>if</span> <span style=color:#75af00>name</span> <span style=color:#f92672>==</span> <span style=color:#d88200>&#34;&#34;</span> <span style=color:#111>{</span>
+		<span style=color:#00a8c8>return</span> <span style=color:#d88200>&#34;&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>errors</span><span style=color:#111>.</span><span style=color:#75af00>New</span><span style=color:#111>(</span><span style=color:#d88200>&#34;empty name&#34;</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+
+	<span style=color:#75715e>// If a name was received, Return a greeting that embeds the the in a
+</span><span style=color:#75715e></span>	<span style=color:#75715e>// message.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>message</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Sprintf</span><span style=color:#111>(</span><span style=color:#75af00>randomFormat</span><span style=color:#111>(),</span> <span style=color:#75af00>name</span><span style=color:#111>)</span>
+	<span style=color:#00a8c8>return</span> <span style=color:#75af00>message</span><span style=color:#111>,</span> <span style=color:#00a8c8>nil</span>
+<span style=color:#111>}</span>
+
+<span style=color:#75715e>// init sets initial values for variables used in the fuction.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>init</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+	<span style=color:#75af00>rand</span><span style=color:#111>.</span><span style=color:#75af00>Seed</span><span style=color:#111>(</span><span style=color:#75af00>time</span><span style=color:#111>.</span><span style=color:#75af00>Now</span><span style=color:#111>().</span><span style=color:#75af00>UnixNano</span><span style=color:#111>())</span>
+<span style=color:#111>}</span>
+
+<span style=color:#75715e>// randomFormat returns one of a set of greeting messages. The returned message
+</span><span style=color:#75715e>// is selected at random.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>randomFormat</span><span style=color:#111>()</span> <span style=color:#00a8c8>string</span> <span style=color:#111>{</span>
+	<span style=color:#75715e>// A slice of message formats.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>formats</span> <span style=color:#f92672>:=</span> <span style=color:#111>[]</span><span style=color:#00a8c8>string</span><span style=color:#111>{</span>
+		<span style=color:#d88200>&#34;Hi, %v. Welcome!&#34;</span><span style=color:#111>,</span>
+		<span style=color:#d88200>&#34;Great to see you, %v!&#34;</span><span style=color:#111>,</span>
+		<span style=color:#d88200>&#34;Hail, %v! Well met!&#34;</span><span style=color:#111>,</span>
+	<span style=color:#111>}</span>
+
+	<span style=color:#75715e>// Return a randomly selected message format by specifying a random index
+</span><span style=color:#75715e></span>	<span style=color:#75715e>// for the slice of formats.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>return</span> <span style=color:#75af00>formats</span><span style=color:#111>[</span><span style=color:#75af00>rand</span><span style=color:#111>.</span><span style=color:#75af00>Intn</span><span style=color:#111>(</span><span style=color:#111>len</span><span style=color:#111>(</span><span style=color:#75af00>formats</span><span style=color:#111>))]</span>
+<span style=color:#111>}</span>
+</code></pre></div><p><code>hello.go</code>：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#75af00>message</span><span style=color:#111>,</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>greetings</span><span style=color:#111>.</span><span style=color:#75af00>Hello</span><span style=color:#111>(</span><span style=color:#d88200>&#34;Gladys&#34;</span><span style=color:#111>)</span>
+</code></pre></div><h3 id=多人问候>多人问候</h3>
+<p><code>greetings.go</code>：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#75af00>greetings</span>
+
+<span style=color:#f92672>import</span> <span style=color:#111>(</span>
+	<span style=color:#d88200>&#34;errors&#34;</span>
+	<span style=color:#d88200>&#34;fmt&#34;</span>
+	<span style=color:#d88200>&#34;math/rand&#34;</span>
+	<span style=color:#d88200>&#34;time&#34;</span>
+<span style=color:#111>)</span>
+
+<span style=color:#75715e>// Hello returns a greeting for the named person
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>Hello</span><span style=color:#111>(</span><span style=color:#75af00>name</span> <span style=color:#00a8c8>string</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#00a8c8>string</span><span style=color:#111>,</span> <span style=color:#00a8c8>error</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#75715e>// If no name was given, return an error with a message.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>if</span> <span style=color:#75af00>name</span> <span style=color:#f92672>==</span> <span style=color:#d88200>&#34;&#34;</span> <span style=color:#111>{</span>
+		<span style=color:#00a8c8>return</span> <span style=color:#d88200>&#34;&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>errors</span><span style=color:#111>.</span><span style=color:#75af00>New</span><span style=color:#111>(</span><span style=color:#d88200>&#34;empty name&#34;</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+
+	<span style=color:#75715e>// If a name was received, Return a greeting that embeds the the in a
+</span><span style=color:#75715e></span>	<span style=color:#75715e>// message.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>message</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Sprintf</span><span style=color:#111>(</span><span style=color:#75af00>randomFormat</span><span style=color:#111>(),</span> <span style=color:#75af00>name</span><span style=color:#111>)</span>
+	<span style=color:#00a8c8>return</span> <span style=color:#75af00>message</span><span style=color:#111>,</span> <span style=color:#00a8c8>nil</span>
+<span style=color:#111>}</span>
+
+<span style=color:#75715e>// Hellos returns a map that associates each of the named people with a greeting
+</span><span style=color:#75715e>// message.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>Hellos</span><span style=color:#111>(</span><span style=color:#75af00>names</span> <span style=color:#111>[]</span><span style=color:#00a8c8>string</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#00a8c8>map</span><span style=color:#111>[</span><span style=color:#00a8c8>string</span><span style=color:#111>]</span><span style=color:#00a8c8>string</span><span style=color:#111>,</span> <span style=color:#00a8c8>error</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#75715e>// A map to associate names with messages.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>messages</span> <span style=color:#f92672>:=</span> <span style=color:#111>make</span><span style=color:#111>(</span><span style=color:#00a8c8>map</span><span style=color:#111>[</span><span style=color:#00a8c8>string</span><span style=color:#111>]</span><span style=color:#00a8c8>string</span><span style=color:#111>)</span>
+	<span style=color:#75715e>// Loop through the received slice of names, calling the Hello function to
+</span><span style=color:#75715e></span>	<span style=color:#75715e>// get a message for each name.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>for</span> <span style=color:#75af00>_</span><span style=color:#111>,</span> <span style=color:#75af00>name</span> <span style=color:#f92672>:=</span> <span style=color:#00a8c8>range</span> <span style=color:#75af00>names</span> <span style=color:#111>{</span>
+		<span style=color:#75af00>message</span><span style=color:#111>,</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>Hello</span><span style=color:#111>(</span><span style=color:#75af00>name</span><span style=color:#111>)</span>
+		<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+			<span style=color:#00a8c8>return</span> <span style=color:#00a8c8>nil</span><span style=color:#111>,</span> <span style=color:#75af00>err</span>
+		<span style=color:#111>}</span>
+		<span style=color:#75715e>// In the map, associate the retrieved message with the name.
+</span><span style=color:#75715e></span>		<span style=color:#75af00>messages</span><span style=color:#111>[</span><span style=color:#75af00>name</span><span style=color:#111>]</span> <span style=color:#111>=</span> <span style=color:#75af00>message</span>
+	<span style=color:#111>}</span>
+	<span style=color:#00a8c8>return</span> <span style=color:#75af00>messages</span><span style=color:#111>,</span> <span style=color:#00a8c8>nil</span>
+<span style=color:#111>}</span>
+</code></pre></div><p><code>hello.go</code></p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#00a8c8>func</span> <span style=color:#75af00>main</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+	<span style=color:#75715e>// Set properties of the predefined Logger, including the log
+</span><span style=color:#75715e></span>	<span style=color:#75715e>// entry prefix and a flag to disable printing the time, source
+</span><span style=color:#75715e></span>	<span style=color:#75715e>// file, and line number.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>log</span><span style=color:#111>.</span><span style=color:#75af00>SetPrefix</span><span style=color:#111>(</span><span style=color:#d88200>&#34;greetings: &#34;</span><span style=color:#111>)</span>
+	<span style=color:#75af00>log</span><span style=color:#111>.</span><span style=color:#75af00>SetFlags</span><span style=color:#111>(</span><span style=color:#ae81ff>0</span><span style=color:#111>)</span>
+
+	<span style=color:#75715e>// A slice of names.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>names</span> <span style=color:#f92672>:=</span> <span style=color:#111>[]</span><span style=color:#00a8c8>string</span><span style=color:#111>{</span><span style=color:#d88200>&#34;Gladys&#34;</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;Samantha&#34;</span><span style=color:#111>,</span> <span style=color:#d88200>&#34;Darrin&#34;</span><span style=color:#111>}</span>
+
+	<span style=color:#75715e>// Request greeting messages for the names.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>messages</span><span style=color:#111>,</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>greetings</span><span style=color:#111>.</span><span style=color:#75af00>Hellos</span><span style=color:#111>(</span><span style=color:#75af00>names</span><span style=color:#111>)</span>
+	<span style=color:#75715e>// If an error was returned, print it to the console and exit the program.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#75af00>log</span><span style=color:#111>.</span><span style=color:#75af00>Fatal</span><span style=color:#111>(</span><span style=color:#75af00>err</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+
+	<span style=color:#75715e>// If no error was returned, print the returned message to the massage.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Println</span><span style=color:#111>(</span><span style=color:#75af00>messages</span><span style=color:#111>)</span>
+<span style=color:#111>}</span>
+</code></pre></div><h3 id=测试>测试</h3>
+<p><code>greetings_test.go</code>：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#75af00>greetings</span>
+
+<span style=color:#f92672>import</span> <span style=color:#111>(</span>
+	<span style=color:#d88200>&#34;regexp&#34;</span>
+	<span style=color:#d88200>&#34;testing&#34;</span>
+<span style=color:#111>)</span>
+
+<span style=color:#75715e>// TestHelloName calls greetings.Hello with a name, cheking for a vaild return
+</span><span style=color:#75715e>// value.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>TestHelloName</span><span style=color:#111>(</span><span style=color:#75af00>t</span> <span style=color:#f92672>*</span><span style=color:#75af00>testing</span><span style=color:#111>.</span><span style=color:#75af00>T</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#75af00>name</span> <span style=color:#f92672>:=</span> <span style=color:#d88200>&#34;Gladys&#34;</span>
+	<span style=color:#75af00>want</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>regexp</span><span style=color:#111>.</span><span style=color:#75af00>MustCompile</span><span style=color:#111>(</span><span style=color:#d88200>`\b`</span> <span style=color:#f92672>+</span> <span style=color:#75af00>name</span> <span style=color:#f92672>+</span> <span style=color:#d88200>`\b`</span><span style=color:#111>)</span>
+	<span style=color:#75af00>msg</span><span style=color:#111>,</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>Hello</span><span style=color:#111>(</span><span style=color:#d88200>&#34;Gladys&#34;</span><span style=color:#111>)</span>
+	<span style=color:#00a8c8>if</span> <span style=color:#111>!</span><span style=color:#75af00>want</span><span style=color:#111>.</span><span style=color:#75af00>MatchString</span><span style=color:#111>(</span><span style=color:#75af00>msg</span><span style=color:#111>)</span> <span style=color:#f92672>||</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#75af00>t</span><span style=color:#111>.</span><span style=color:#75af00>Fatalf</span><span style=color:#111>(</span><span style=color:#d88200>`Hello(&#34;Gladys&#34;) = %q, %v, want match for %#q, nil`</span><span style=color:#111>,</span>
+			<span style=color:#75af00>msg</span><span style=color:#111>,</span> <span style=color:#75af00>err</span><span style=color:#111>,</span> <span style=color:#75af00>want</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+<span style=color:#111>}</span>
+
+<span style=color:#75715e>// TestHelloEmpty calls greetings.Hello with an empty string, checking for an
+</span><span style=color:#75715e>// error.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>TestHelloEmpty</span><span style=color:#111>(</span><span style=color:#75af00>t</span> <span style=color:#f92672>*</span><span style=color:#75af00>testing</span><span style=color:#111>.</span><span style=color:#75af00>T</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#75af00>msg</span><span style=color:#111>,</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>Hello</span><span style=color:#111>(</span><span style=color:#d88200>&#34;&#34;</span><span style=color:#111>)</span>
+	<span style=color:#00a8c8>if</span> <span style=color:#75af00>msg</span> <span style=color:#f92672>!=</span> <span style=color:#d88200>&#34;&#34;</span> <span style=color:#f92672>||</span> <span style=color:#75af00>err</span> <span style=color:#f92672>==</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#75af00>t</span><span style=color:#111>.</span><span style=color:#75af00>Fatalf</span><span style=color:#111>(</span><span style=color:#d88200>`Hello(&#34;&#34;) = %q, %v, want &#34;&#34;, error`</span><span style=color:#111>,</span> <span style=color:#75af00>msg</span><span style=color:#111>,</span> <span style=color:#75af00>err</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+<span style=color:#111>}</span>
+</code></pre></div><h3 id=编译安装>编译安装</h3>
+<p>编译：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>go build
+
+./hello
+</code></pre></div><p>安装：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash><span style=color:#75715e># 显示安装目录</span>
+go list -f <span style=color:#d88200>&#39;{{ .Target }}&#39;</span>
+
+<span style=color:#75715e># 配置环境变量</span>
+<span style=color:#111>export</span> <span style=color:#111>PATH</span><span style=color:#f92672>=</span><span style=color:#111>$PATH</span>:/path/to/your/install/directory
+<span style=color:#75715e># 安装</span>
+go install
+
+<span style=color:#75715e># 运行</span>
+hello
 </code></pre></div>
 <div class=row><div class="position-relative mx-auto col-lg-9">
 <div class="bg-primary overflow-hidden p-3 mt-5 shadow">
