@@ -48,7 +48,7 @@ func main() {
 go mod tidy
 ```
 
-## 教程：创建一个 Go 模块 
+## 教程：创建一个 Go 模块
 
 ### 创建模块
 
@@ -364,9 +364,478 @@ go install
 hello
 ```
 
+## 教程：访问关系型数据库
 
+### 准备
 
+安装 MySQL：
 
+```bash
+docker run -itd --name mysql -e MYSQL_ROOT_PASSWORD=123456 -p 3306:3306 mysql:5.7 --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+```
 
+```bash
+mkdir data-access
 
+cd data-access
 
+go mod init example/data-access
+```
+
+### 初始化数据库
+
+```bash
+docker exec -ti mysql mysql -u root -p123456
+```
+
+创建数据库：
+
+```sql
+create database recordings;
+```
+
+`create-tables.sql`：
+
+```sql
+DROP TABLE IF EXISTS album;
+CREATE TABLE album (
+	id			  INT AUTO_INCREMENT NOT NULL,
+	title		  VARCHAR(128) NOT NULL,
+	artist	  VARCHAR(128) NOT NULL,
+	price		  DECIMAL(5,2) NOT NULL,
+	PRIMARY KEY (`id`)
+);
+
+INSERT INTO album
+  (title, artist, price)
+VALUES
+  ('Blue Train', 'John Coltrane', 56.99),
+  ('Giant Steps', 'John Coltrane', 63.99),
+  ('Jeru', 'Gerry Mulligan', 17.99),
+  ('Sarah Vaughan', 'Sarah Vaughan', 34.98);
+```
+
+初始化数据：
+
+```bash
+docker exec -ti mysql mysql -uroot -p123456 recordings -e "source /tmp/create-tables.sql
+```
+
+```
+mysql> select * from album;
++----+---------------+----------------+-------+
+| id | title         | artist         | price |
++----+---------------+----------------+-------+
+|  1 | Blue Train    | John Coltrane  | 56.99 |
+|  2 | Giant Steps   | John Coltrane  | 63.99 |
+|  3 | Jeru          | Gerry Mulligan | 17.99 |
+|  4 | Sarah Vaughan | Sarah Vaughan  | 34.98 |
++----+---------------+----------------+-------+
+```
+
+### 获取数据库句柄并链接
+
+`main.go`
+
+```go
+package main
+
+import (
+	"database/sql"
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/go-sql-driver/mysql"
+)
+
+var db *sql.DB
+
+func main() {
+	// Capture connection properties.
+	cfg := mysql.Config{
+		User:                 os.Getenv("DBUSER"),
+		Passwd:               os.Getenv("DBPASS"),
+		Net:                  "tcp",
+		Addr:                 "127.0.0.1:3306",
+		DBName:               "recordings",
+		AllowNativePasswords: true,
+	}
+	// Get a database handle.
+	var err error
+	db, err = sql.Open("mysql", cfg.FormatDSN())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	pingErr := db.Ping()
+	if pingErr != nil {
+		log.Fatal(pingErr)
+	}
+	fmt.Println("Connected!")
+}
+```
+
+- `sql.DB` 表示一个连接池。
+- `sql.Open` 的第一个参数是驱动名称。
+- `cfg.FormatDSN()` 将配置转换为 "User:Passwd@tcp(127.0.0.1:3306)/recordings"。
+- db.Ping() 检查数据库连通性。
+
+```bash
+go get .
+
+go run .
+```
+
+### 查询多行
+
+```go
+package main
+
+import (
+	"database/sql"
+	"fmt"
+	"log"
+	"os"
+
+	"github.com/go-sql-driver/mysql"
+)
+
+var db *sql.DB
+
+type Album struct {
+	ID     int64
+	Title  string
+	Artist string
+	Price  float32
+}
+
+func main() {
+	// Capture connection properties.
+	cfg := mysql.Config{
+		User:                 os.Getenv("DBUSER"),
+		Passwd:               os.Getenv("DBPASS"),
+		Net:                  "tcp",
+		Addr:                 "127.0.0.1:3306",
+		DBName:               "recordings",
+		AllowNativePasswords: true,
+	}
+	// Get a database handle.
+	var err error
+	db, err = sql.Open("mysql", cfg.FormatDSN())
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	pingErr := db.Ping()
+	if pingErr != nil {
+		log.Fatal(pingErr)
+	}
+	fmt.Println("Connected!")
+
+	albums, err := albumByArtist("John Coltrane")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Albums found: %v\n", albums)
+}
+
+// albumByArtist queries for album that have the specified artist name.
+func albumByArtist(name string) ([]Album, error) {
+	// An album slice to hold data from returned rows.
+	var albums []Album
+
+	rows, err := db.Query("SELECT * FROM album WHERE artist = ?", name)
+	if err != nil {
+		return nil, fmt.Errorf("albumByArtist %q: %v", name, err)
+	}
+	defer rows.Close()
+	// Loop through rows, using Scan to assign column data to struct fields.
+	for rows.Next() {
+		var alb Album
+		if err := rows.Scan(&alb.ID, &alb.Title, &alb.Artist, &alb.Price); err != nil {
+			return nil, fmt.Errorf("albumByArtist %q: %v", name, err)
+		}
+		albums = append(albums, alb)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("albumByArtist %q: %v", name, err)
+	}
+	return albums, nil
+}
+```
+
+- `Query` 方法返回一个 `*Rows` 的指针，存放结果集。
+- `defer rows.Close()` 在函数退出阶段调用，防止连接泄漏。
+- `rows.Scan` 扫描当前行的列值分配给 `Album` 结构体。
+
+### 查询单行
+
+`albumByID` 函数：
+
+```go
+// albumByID queries for the album with the specified ID.
+func albumByID(id int64) (Album, error) {
+	// An album to hold data from the returned row.
+	var alb Album
+
+	row := db.QueryRow("SELECT * FROM album WHERE id = ?", id)
+	if err := row.Scan(&alb.ID, &alb.Title, &alb.Artist, &alb.Price); err != nil {
+		if err == sql.ErrNoRows {
+			return alb, fmt.Errorf("albumByID %d: no such album", id)
+		}
+		return alb, fmt.Errorf("albumByID %d: %v", id, err)
+	}
+	return alb, nil
+}
+```
+
+`main` 函数添加：
+
+```go
+	// Hard-code ID 2 here to test the query.
+	alb, err := albumByID(2)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("Album found: %v\n", alb)
+```
+
+## 添加数据
+
+`addAlbum` 函数：
+
+```go
+// addAlbum adds the specified album to the database, returning the album ID of
+// the nuw entry
+func addAlbum(alb Album) (int64, error) {
+	result, err := db.Exec("INSERT INTO album (title, artist, price) VALUES (?, ?, ?)", alb.Title, alb.Artist, alb.Price)
+	if err != nil {
+		return 0, fmt.Errorf("addAlbum: %v", err)
+	}
+	id, err := result.LastInsertId()
+	if err != nil {
+		return 0, fmt.Errorf("addAlbum: %v", err)
+	}
+	return id, nil
+}
+```
+
+- `db.Exec` 方法执行不返回数据的 SQL 语句。
+- `Result.LastInsertId` 方法返回插入数据库行的 ID。
+
+`main` 函数添加：
+
+```go
+	albID, err := addAlbum(Album{
+		Title:  "The Modern Sound of Betty Carter",
+		Artist: "Betty Carter",
+		Price:  49.99,
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Printf("ID of added album: %v\n", albID)
+```
+
+## 教程：使用 Gin 开发 RESTful API
+
+### 创建数据
+
+```go
+package main
+
+// album represents data about a record album.
+type album struct {
+	ID     string  `json:"id"`
+	Title  string  `json:"title"`
+	Artist string  `json:"artist"`
+	Price  float64 `json:"price"`
+}
+
+// albums slice to seed record album data.
+var albums = []album{
+	{ID: "1", Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
+	{ID: "2", Title: "Jeru", Artist: "Gerry Mulligan", Price: 17.99},
+	{ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
+}
+```
+
+### 返回所有数据
+
+```go
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+// ...
+
+func main() {
+
+	router := gin.Default()
+	router.GET("/albums", getAlbums)
+
+	router.Run("localhost:8080")
+}
+
+// getAlbums responds with the list of all albums as JSON.
+func getAlbums(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, albums)
+}
+```
+
+```bash
+go get .
+
+go run .
+
+curl http://localhost:8080/albums
+```
+
+### 添加新项
+
+添加 `postAlbums` 函数：
+
+```go
+// postAlbums adds an album from JSON received in the request body.
+func postAlbums(c *gin.Context) {
+	var newAlbum album
+
+	// Call BindJSON to bind the received JSON to new Album.
+	if err := c.BindJSON(&newAlbum); err != nil {
+		return
+	}
+
+	// Add the new album to the slice.
+	albums = append(albums, newAlbum)
+	c.IndentedJSON(http.StatusCreated, newAlbum)
+}
+```
+
+`main` 函数添加：
+
+```go
+router.POST("/albums", postAlbums)
+```
+
+```bash
+curl http://localhost:8080/albums \
+	--include \
+	--header "Content-Type: application/json" \
+	--request "POST" \
+	--data '{"id": "4","title": "The Modern Sound of Betty Carter","artist": "Betty Carter","price": 49.99}'
+
+curl http://localhost:8080/albums \
+	--header "Content-Type: application/json" \
+	--request "GET"
+```
+
+### 返回特定项
+
+`getAlbumByID` 函数：
+
+```go
+// getAlbumByID locates the album whose ID value matches the id parameter sent
+// by the client, then returns that album as a response.
+func getAlbumByID(c *gin.Context) {
+	id := c.Param("id")
+
+	// Loop over the list of albums, looking for an album whose ID value matches
+	// the parameter.
+	for _, a := range albums {
+		if a.ID == id {
+			c.IndentedJSON(http.StatusOK, a)
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+}
+```
+
+`main` 添加：
+
+```go
+	router.GET("/albums/:id", getAlbumByID)
+```
+
+- `:id` Gin 中路径前面有冒号表示该项是路径参数。
+
+```bash
+curl http://localhost:8080/albums/2
+
+curl http://localhost:8080/albums/5
+```
+
+### 完整代码
+
+```go
+package main
+
+import (
+	"net/http"
+
+	"github.com/gin-gonic/gin"
+)
+
+// album represents data about a record album.
+type album struct {
+	ID     string  `json:"id"`
+	Title  string  `json:"title"`
+	Artist string  `json:"artist"`
+	Price  float64 `json:"price"`
+}
+
+// albums slice to seed record album data.
+var albums = []album{
+	{ID: "1", Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
+	{ID: "2", Title: "Jeru", Artist: "Gerry Mulligan", Price: 17.99},
+	{ID: "3", Title: "Sarah Vaughan and Clifford Brown", Artist: "Sarah Vaughan", Price: 39.99},
+}
+
+func main() {
+
+	router := gin.Default()
+	router.GET("/albums", getAlbums)
+	router.GET("/albums/:id", getAlbumByID)
+	router.POST("/albums", postAlbums)
+
+	router.Run("localhost:8080")
+}
+
+// getAlbums responds with the list of all albums as JSON.
+func getAlbums(c *gin.Context) {
+	c.IndentedJSON(http.StatusOK, albums)
+}
+
+// postAlbums adds an album from JSON received in the request body.
+func postAlbums(c *gin.Context) {
+	var newAlbum album
+
+	// Call BindJSON to bind the received JSON to new Album.
+	if err := c.BindJSON(&newAlbum); err != nil {
+		return
+	}
+
+	// Add the new album to the slice.
+	albums = append(albums, newAlbum)
+	c.IndentedJSON(http.StatusCreated, newAlbum)
+}
+
+// getAlbumByID locates the album whose ID value matches the id parameter sent
+// by the client, then returns that album as a response.
+func getAlbumByID(c *gin.Context) {
+	id := c.Param("id")
+
+	// Loop over the list of albums, looking for an album whose ID value matches
+	// the parameter.
+	for _, a := range albums {
+		if a.ID == id {
+			c.IndentedJSON(http.StatusOK, a)
+			return
+		}
+	}
+	c.IndentedJSON(http.StatusNotFound, gin.H{"message": "album not found"})
+}
+```
