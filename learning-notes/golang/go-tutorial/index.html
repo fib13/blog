@@ -120,6 +120,25 @@ Tekton 实践：安装
 <li><a href=#编译安装>编译安装</a></li>
 </ul>
 </li>
+<li><a href=#教程访问关系型数据库>教程：访问关系型数据库</a>
+<ul>
+<li><a href=#准备>准备</a></li>
+<li><a href=#初始化数据库>初始化数据库</a></li>
+<li><a href=#获取数据库句柄并链接>获取数据库句柄并链接</a></li>
+<li><a href=#查询多行>查询多行</a></li>
+<li><a href=#查询单行>查询单行</a></li>
+</ul>
+</li>
+<li><a href=#添加数据>添加数据</a></li>
+<li><a href=#教程使用-gin-开发-restful-api>教程：使用 Gin 开发 RESTful API</a>
+<ul>
+<li><a href=#创建数据>创建数据</a></li>
+<li><a href=#返回所有数据>返回所有数据</a></li>
+<li><a href=#添加新项>添加新项</a></li>
+<li><a href=#返回特定项>返回特定项</a></li>
+<li><a href=#完整代码>完整代码</a></li>
+</ul>
+</li>
 </ul>
 </nav>
 </div>
@@ -400,6 +419,388 @@ go install
 
 <span style=color:#75715e># 运行</span>
 hello
+</code></pre></div><h2 id=教程访问关系型数据库>教程：访问关系型数据库</h2>
+<h3 id=准备>准备</h3>
+<p>安装 MySQL：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker run -itd --name mysql -e <span style=color:#111>MYSQL_ROOT_PASSWORD</span><span style=color:#f92672>=</span><span style=color:#ae81ff>123456</span> -p 3306:3306 mysql:5.7 --character-set-server<span style=color:#f92672>=</span>utf8mb4 --collation-server<span style=color:#f92672>=</span>utf8mb4_unicode_ci
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>mkdir data-access
+
+<span style=color:#111>cd</span> data-access
+
+go mod init example/data-access
+</code></pre></div><h3 id=初始化数据库>初始化数据库</h3>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker <span style=color:#111>exec</span> -ti mysql mysql -u root -p123456
+</code></pre></div><p>创建数据库：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=color:#00a8c8>create</span> <span style=color:#00a8c8>database</span> <span style=color:#111>recordings</span><span style=color:#111>;</span>
+</code></pre></div><p><code>create-tables.sql</code>：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-sql data-lang=sql><span style=color:#00a8c8>DROP</span> <span style=color:#00a8c8>TABLE</span> <span style=color:#00a8c8>IF</span> <span style=color:#00a8c8>EXISTS</span> <span style=color:#111>album</span><span style=color:#111>;</span>
+<span style=color:#00a8c8>CREATE</span> <span style=color:#00a8c8>TABLE</span> <span style=color:#111>album</span> <span style=color:#111>(</span>
+	<span style=color:#111>id</span>			  <span style=color:#111>INT</span> <span style=color:#111>AUTO_INCREMENT</span> <span style=color:#00a8c8>NOT</span> <span style=color:#00a8c8>NULL</span><span style=color:#111>,</span>
+	<span style=color:#111>title</span>		  <span style=color:#111>VARCHAR</span><span style=color:#111>(</span><span style=color:#ae81ff>128</span><span style=color:#111>)</span> <span style=color:#00a8c8>NOT</span> <span style=color:#00a8c8>NULL</span><span style=color:#111>,</span>
+	<span style=color:#111>artist</span>	  <span style=color:#111>VARCHAR</span><span style=color:#111>(</span><span style=color:#ae81ff>128</span><span style=color:#111>)</span> <span style=color:#00a8c8>NOT</span> <span style=color:#00a8c8>NULL</span><span style=color:#111>,</span>
+	<span style=color:#111>price</span>		  <span style=color:#111>DECIMAL</span><span style=color:#111>(</span><span style=color:#ae81ff>5</span><span style=color:#111>,</span><span style=color:#ae81ff>2</span><span style=color:#111>)</span> <span style=color:#00a8c8>NOT</span> <span style=color:#00a8c8>NULL</span><span style=color:#111>,</span>
+	<span style=color:#00a8c8>PRIMARY</span> <span style=color:#00a8c8>KEY</span> <span style=color:#111>(</span><span style=color:#f92672>`</span><span style=color:#111>id</span><span style=color:#f92672>`</span><span style=color:#111>)</span>
+<span style=color:#111>);</span>
+
+<span style=color:#00a8c8>INSERT</span> <span style=color:#00a8c8>INTO</span> <span style=color:#111>album</span>
+  <span style=color:#111>(</span><span style=color:#111>title</span><span style=color:#111>,</span> <span style=color:#111>artist</span><span style=color:#111>,</span> <span style=color:#111>price</span><span style=color:#111>)</span>
+<span style=color:#00a8c8>VALUES</span>
+  <span style=color:#111>(</span><span style=color:#d88200>&#39;Blue Train&#39;</span><span style=color:#111>,</span> <span style=color:#d88200>&#39;John Coltrane&#39;</span><span style=color:#111>,</span> <span style=color:#ae81ff>56</span><span style=color:#111>.</span><span style=color:#ae81ff>99</span><span style=color:#111>),</span>
+  <span style=color:#111>(</span><span style=color:#d88200>&#39;Giant Steps&#39;</span><span style=color:#111>,</span> <span style=color:#d88200>&#39;John Coltrane&#39;</span><span style=color:#111>,</span> <span style=color:#ae81ff>63</span><span style=color:#111>.</span><span style=color:#ae81ff>99</span><span style=color:#111>),</span>
+  <span style=color:#111>(</span><span style=color:#d88200>&#39;Jeru&#39;</span><span style=color:#111>,</span> <span style=color:#d88200>&#39;Gerry Mulligan&#39;</span><span style=color:#111>,</span> <span style=color:#ae81ff>17</span><span style=color:#111>.</span><span style=color:#ae81ff>99</span><span style=color:#111>),</span>
+  <span style=color:#111>(</span><span style=color:#d88200>&#39;Sarah Vaughan&#39;</span><span style=color:#111>,</span> <span style=color:#d88200>&#39;Sarah Vaughan&#39;</span><span style=color:#111>,</span> <span style=color:#ae81ff>34</span><span style=color:#111>.</span><span style=color:#ae81ff>98</span><span style=color:#111>);</span>
+</code></pre></div><p>初始化数据：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>docker <span style=color:#111>exec</span> -ti mysql mysql -uroot -p123456 recordings -e <span style=color:#d88200>&#34;source /tmp/create-tables.sql
+</span></code></pre></div><pre tabindex=0><code>mysql&gt; select * from album;
++----+---------------+----------------+-------+
+| id | title         | artist         | price |
++----+---------------+----------------+-------+
+|  1 | Blue Train    | John Coltrane  | 56.99 |
+|  2 | Giant Steps   | John Coltrane  | 63.99 |
+|  3 | Jeru          | Gerry Mulligan | 17.99 |
+|  4 | Sarah Vaughan | Sarah Vaughan  | 34.98 |
++----+---------------+----------------+-------+
+</code></pre><h3 id=获取数据库句柄并链接>获取数据库句柄并链接</h3>
+<p><code>main.go</code></p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#75af00>main</span>
+
+<span style=color:#f92672>import</span> <span style=color:#111>(</span>
+	<span style=color:#d88200>&#34;database/sql&#34;</span>
+	<span style=color:#d88200>&#34;fmt&#34;</span>
+	<span style=color:#d88200>&#34;log&#34;</span>
+	<span style=color:#d88200>&#34;os&#34;</span>
+
+	<span style=color:#d88200>&#34;github.com/go-sql-driver/mysql&#34;</span>
+<span style=color:#111>)</span>
+
+<span style=color:#00a8c8>var</span> <span style=color:#75af00>db</span> <span style=color:#f92672>*</span><span style=color:#75af00>sql</span><span style=color:#111>.</span><span style=color:#75af00>DB</span>
+
+<span style=color:#00a8c8>func</span> <span style=color:#75af00>main</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+	<span style=color:#75715e>// Capture connection properties.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>cfg</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>mysql</span><span style=color:#111>.</span><span style=color:#75af00>Config</span><span style=color:#111>{</span>
+		<span style=color:#75af00>User</span><span style=color:#111>:</span>                 <span style=color:#75af00>os</span><span style=color:#111>.</span><span style=color:#75af00>Getenv</span><span style=color:#111>(</span><span style=color:#d88200>&#34;DBUSER&#34;</span><span style=color:#111>),</span>
+		<span style=color:#75af00>Passwd</span><span style=color:#111>:</span>               <span style=color:#75af00>os</span><span style=color:#111>.</span><span style=color:#75af00>Getenv</span><span style=color:#111>(</span><span style=color:#d88200>&#34;DBPASS&#34;</span><span style=color:#111>),</span>
+		<span style=color:#75af00>Net</span><span style=color:#111>:</span>                  <span style=color:#d88200>&#34;tcp&#34;</span><span style=color:#111>,</span>
+		<span style=color:#75af00>Addr</span><span style=color:#111>:</span>                 <span style=color:#d88200>&#34;127.0.0.1:3306&#34;</span><span style=color:#111>,</span>
+		<span style=color:#75af00>DBName</span><span style=color:#111>:</span>               <span style=color:#d88200>&#34;recordings&#34;</span><span style=color:#111>,</span>
+		<span style=color:#75af00>AllowNativePasswords</span><span style=color:#111>:</span> <span style=color:#00a8c8>true</span><span style=color:#111>,</span>
+	<span style=color:#111>}</span>
+	<span style=color:#75715e>// Get a database handle.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>var</span> <span style=color:#75af00>err</span> <span style=color:#00a8c8>error</span>
+	<span style=color:#75af00>db</span><span style=color:#111>,</span> <span style=color:#75af00>err</span> <span style=color:#111>=</span> <span style=color:#75af00>sql</span><span style=color:#111>.</span><span style=color:#75af00>Open</span><span style=color:#111>(</span><span style=color:#d88200>&#34;mysql&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>cfg</span><span style=color:#111>.</span><span style=color:#75af00>FormatDSN</span><span style=color:#111>())</span>
+	<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#75af00>log</span><span style=color:#111>.</span><span style=color:#75af00>Fatal</span><span style=color:#111>(</span><span style=color:#75af00>err</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+
+	<span style=color:#75af00>pingErr</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>db</span><span style=color:#111>.</span><span style=color:#75af00>Ping</span><span style=color:#111>()</span>
+	<span style=color:#00a8c8>if</span> <span style=color:#75af00>pingErr</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#75af00>log</span><span style=color:#111>.</span><span style=color:#75af00>Fatal</span><span style=color:#111>(</span><span style=color:#75af00>pingErr</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+	<span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Println</span><span style=color:#111>(</span><span style=color:#d88200>&#34;Connected!&#34;</span><span style=color:#111>)</span>
+<span style=color:#111>}</span>
+</code></pre></div><ul>
+<li><code>sql.DB</code> 表示一个连接池。</li>
+<li><code>sql.Open</code> 的第一个参数是驱动名称。</li>
+<li><code>cfg.FormatDSN()</code> 将配置转换为 &ldquo;User:Passwd@tcp(127.0.0.1:3306)/recordings&rdquo;。</li>
+<li>db.Ping() 检查数据库连通性。</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>go get .
+
+go run .
+</code></pre></div><h3 id=查询多行>查询多行</h3>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#75af00>main</span>
+
+<span style=color:#f92672>import</span> <span style=color:#111>(</span>
+	<span style=color:#d88200>&#34;database/sql&#34;</span>
+	<span style=color:#d88200>&#34;fmt&#34;</span>
+	<span style=color:#d88200>&#34;log&#34;</span>
+	<span style=color:#d88200>&#34;os&#34;</span>
+
+	<span style=color:#d88200>&#34;github.com/go-sql-driver/mysql&#34;</span>
+<span style=color:#111>)</span>
+
+<span style=color:#00a8c8>var</span> <span style=color:#75af00>db</span> <span style=color:#f92672>*</span><span style=color:#75af00>sql</span><span style=color:#111>.</span><span style=color:#75af00>DB</span>
+
+<span style=color:#00a8c8>type</span> <span style=color:#75af00>Album</span> <span style=color:#00a8c8>struct</span> <span style=color:#111>{</span>
+	<span style=color:#75af00>ID</span>     <span style=color:#00a8c8>int64</span>
+	<span style=color:#75af00>Title</span>  <span style=color:#00a8c8>string</span>
+	<span style=color:#75af00>Artist</span> <span style=color:#00a8c8>string</span>
+	<span style=color:#75af00>Price</span>  <span style=color:#00a8c8>float32</span>
+<span style=color:#111>}</span>
+
+<span style=color:#00a8c8>func</span> <span style=color:#75af00>main</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+	<span style=color:#75715e>// Capture connection properties.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>cfg</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>mysql</span><span style=color:#111>.</span><span style=color:#75af00>Config</span><span style=color:#111>{</span>
+		<span style=color:#75af00>User</span><span style=color:#111>:</span>                 <span style=color:#75af00>os</span><span style=color:#111>.</span><span style=color:#75af00>Getenv</span><span style=color:#111>(</span><span style=color:#d88200>&#34;DBUSER&#34;</span><span style=color:#111>),</span>
+		<span style=color:#75af00>Passwd</span><span style=color:#111>:</span>               <span style=color:#75af00>os</span><span style=color:#111>.</span><span style=color:#75af00>Getenv</span><span style=color:#111>(</span><span style=color:#d88200>&#34;DBPASS&#34;</span><span style=color:#111>),</span>
+		<span style=color:#75af00>Net</span><span style=color:#111>:</span>                  <span style=color:#d88200>&#34;tcp&#34;</span><span style=color:#111>,</span>
+		<span style=color:#75af00>Addr</span><span style=color:#111>:</span>                 <span style=color:#d88200>&#34;127.0.0.1:3306&#34;</span><span style=color:#111>,</span>
+		<span style=color:#75af00>DBName</span><span style=color:#111>:</span>               <span style=color:#d88200>&#34;recordings&#34;</span><span style=color:#111>,</span>
+		<span style=color:#75af00>AllowNativePasswords</span><span style=color:#111>:</span> <span style=color:#00a8c8>true</span><span style=color:#111>,</span>
+	<span style=color:#111>}</span>
+	<span style=color:#75715e>// Get a database handle.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>var</span> <span style=color:#75af00>err</span> <span style=color:#00a8c8>error</span>
+	<span style=color:#75af00>db</span><span style=color:#111>,</span> <span style=color:#75af00>err</span> <span style=color:#111>=</span> <span style=color:#75af00>sql</span><span style=color:#111>.</span><span style=color:#75af00>Open</span><span style=color:#111>(</span><span style=color:#d88200>&#34;mysql&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>cfg</span><span style=color:#111>.</span><span style=color:#75af00>FormatDSN</span><span style=color:#111>())</span>
+	<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#75af00>log</span><span style=color:#111>.</span><span style=color:#75af00>Fatal</span><span style=color:#111>(</span><span style=color:#75af00>err</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+
+	<span style=color:#75af00>pingErr</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>db</span><span style=color:#111>.</span><span style=color:#75af00>Ping</span><span style=color:#111>()</span>
+	<span style=color:#00a8c8>if</span> <span style=color:#75af00>pingErr</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#75af00>log</span><span style=color:#111>.</span><span style=color:#75af00>Fatal</span><span style=color:#111>(</span><span style=color:#75af00>pingErr</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+	<span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Println</span><span style=color:#111>(</span><span style=color:#d88200>&#34;Connected!&#34;</span><span style=color:#111>)</span>
+
+	<span style=color:#75af00>albums</span><span style=color:#111>,</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>albumByArtist</span><span style=color:#111>(</span><span style=color:#d88200>&#34;John Coltrane&#34;</span><span style=color:#111>)</span>
+	<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#75af00>log</span><span style=color:#111>.</span><span style=color:#75af00>Fatal</span><span style=color:#111>(</span><span style=color:#75af00>err</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+	<span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Printf</span><span style=color:#111>(</span><span style=color:#d88200>&#34;Albums found: %v\n&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>albums</span><span style=color:#111>)</span>
+<span style=color:#111>}</span>
+
+<span style=color:#75715e>// albumByArtist queries for album that have the specified artist name.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>albumByArtist</span><span style=color:#111>(</span><span style=color:#75af00>name</span> <span style=color:#00a8c8>string</span><span style=color:#111>)</span> <span style=color:#111>([]</span><span style=color:#75af00>Album</span><span style=color:#111>,</span> <span style=color:#00a8c8>error</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#75715e>// An album slice to hold data from returned rows.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>var</span> <span style=color:#75af00>albums</span> <span style=color:#111>[]</span><span style=color:#75af00>Album</span>
+
+	<span style=color:#75af00>rows</span><span style=color:#111>,</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>db</span><span style=color:#111>.</span><span style=color:#75af00>Query</span><span style=color:#111>(</span><span style=color:#d88200>&#34;SELECT * FROM album WHERE artist = ?&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>name</span><span style=color:#111>)</span>
+	<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#00a8c8>return</span> <span style=color:#00a8c8>nil</span><span style=color:#111>,</span> <span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Errorf</span><span style=color:#111>(</span><span style=color:#d88200>&#34;albumByArtist %q: %v&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>name</span><span style=color:#111>,</span> <span style=color:#75af00>err</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+	<span style=color:#00a8c8>defer</span> <span style=color:#75af00>rows</span><span style=color:#111>.</span><span style=color:#75af00>Close</span><span style=color:#111>()</span>
+	<span style=color:#75715e>// Loop through rows, using Scan to assign column data to struct fields.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>for</span> <span style=color:#75af00>rows</span><span style=color:#111>.</span><span style=color:#75af00>Next</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+		<span style=color:#00a8c8>var</span> <span style=color:#75af00>alb</span> <span style=color:#75af00>Album</span>
+		<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>rows</span><span style=color:#111>.</span><span style=color:#75af00>Scan</span><span style=color:#111>(</span><span style=color:#f92672>&amp;</span><span style=color:#75af00>alb</span><span style=color:#111>.</span><span style=color:#75af00>ID</span><span style=color:#111>,</span> <span style=color:#f92672>&amp;</span><span style=color:#75af00>alb</span><span style=color:#111>.</span><span style=color:#75af00>Title</span><span style=color:#111>,</span> <span style=color:#f92672>&amp;</span><span style=color:#75af00>alb</span><span style=color:#111>.</span><span style=color:#75af00>Artist</span><span style=color:#111>,</span> <span style=color:#f92672>&amp;</span><span style=color:#75af00>alb</span><span style=color:#111>.</span><span style=color:#75af00>Price</span><span style=color:#111>);</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+			<span style=color:#00a8c8>return</span> <span style=color:#00a8c8>nil</span><span style=color:#111>,</span> <span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Errorf</span><span style=color:#111>(</span><span style=color:#d88200>&#34;albumByArtist %q: %v&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>name</span><span style=color:#111>,</span> <span style=color:#75af00>err</span><span style=color:#111>)</span>
+		<span style=color:#111>}</span>
+		<span style=color:#75af00>albums</span> <span style=color:#111>=</span> <span style=color:#111>append</span><span style=color:#111>(</span><span style=color:#75af00>albums</span><span style=color:#111>,</span> <span style=color:#75af00>alb</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+	<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>rows</span><span style=color:#111>.</span><span style=color:#75af00>Err</span><span style=color:#111>();</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#00a8c8>return</span> <span style=color:#00a8c8>nil</span><span style=color:#111>,</span> <span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Errorf</span><span style=color:#111>(</span><span style=color:#d88200>&#34;albumByArtist %q: %v&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>name</span><span style=color:#111>,</span> <span style=color:#75af00>err</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+	<span style=color:#00a8c8>return</span> <span style=color:#75af00>albums</span><span style=color:#111>,</span> <span style=color:#00a8c8>nil</span>
+<span style=color:#111>}</span>
+</code></pre></div><ul>
+<li><code>Query</code> 方法返回一个 <code>*Rows</code> 的指针，存放结果集。</li>
+<li><code>defer rows.Close()</code> 在函数退出阶段调用，防止连接泄漏。</li>
+<li><code>rows.Scan</code> 扫描当前行的列值分配给 <code>Album</code> 结构体。</li>
+</ul>
+<h3 id=查询单行>查询单行</h3>
+<p><code>albumByID</code> 函数：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#75715e>// albumByID queries for the album with the specified ID.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>albumByID</span><span style=color:#111>(</span><span style=color:#75af00>id</span> <span style=color:#00a8c8>int64</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#75af00>Album</span><span style=color:#111>,</span> <span style=color:#00a8c8>error</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#75715e>// An album to hold data from the returned row.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>var</span> <span style=color:#75af00>alb</span> <span style=color:#75af00>Album</span>
+
+	<span style=color:#75af00>row</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>db</span><span style=color:#111>.</span><span style=color:#75af00>QueryRow</span><span style=color:#111>(</span><span style=color:#d88200>&#34;SELECT * FROM album WHERE id = ?&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>id</span><span style=color:#111>)</span>
+	<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>row</span><span style=color:#111>.</span><span style=color:#75af00>Scan</span><span style=color:#111>(</span><span style=color:#f92672>&amp;</span><span style=color:#75af00>alb</span><span style=color:#111>.</span><span style=color:#75af00>ID</span><span style=color:#111>,</span> <span style=color:#f92672>&amp;</span><span style=color:#75af00>alb</span><span style=color:#111>.</span><span style=color:#75af00>Title</span><span style=color:#111>,</span> <span style=color:#f92672>&amp;</span><span style=color:#75af00>alb</span><span style=color:#111>.</span><span style=color:#75af00>Artist</span><span style=color:#111>,</span> <span style=color:#f92672>&amp;</span><span style=color:#75af00>alb</span><span style=color:#111>.</span><span style=color:#75af00>Price</span><span style=color:#111>);</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>==</span> <span style=color:#75af00>sql</span><span style=color:#111>.</span><span style=color:#75af00>ErrNoRows</span> <span style=color:#111>{</span>
+			<span style=color:#00a8c8>return</span> <span style=color:#75af00>alb</span><span style=color:#111>,</span> <span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Errorf</span><span style=color:#111>(</span><span style=color:#d88200>&#34;albumByID %d: no such album&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>id</span><span style=color:#111>)</span>
+		<span style=color:#111>}</span>
+		<span style=color:#00a8c8>return</span> <span style=color:#75af00>alb</span><span style=color:#111>,</span> <span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Errorf</span><span style=color:#111>(</span><span style=color:#d88200>&#34;albumByID %d: %v&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>id</span><span style=color:#111>,</span> <span style=color:#75af00>err</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+	<span style=color:#00a8c8>return</span> <span style=color:#75af00>alb</span><span style=color:#111>,</span> <span style=color:#00a8c8>nil</span>
+<span style=color:#111>}</span>
+</code></pre></div><p><code>main</code> 函数添加：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>	<span style=color:#75715e>// Hard-code ID 2 here to test the query.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>alb</span><span style=color:#111>,</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>albumByID</span><span style=color:#111>(</span><span style=color:#ae81ff>2</span><span style=color:#111>)</span>
+	<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#75af00>log</span><span style=color:#111>.</span><span style=color:#75af00>Fatal</span><span style=color:#111>(</span><span style=color:#75af00>err</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+	<span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Printf</span><span style=color:#111>(</span><span style=color:#d88200>&#34;Album found: %v\n&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>alb</span><span style=color:#111>)</span>
+</code></pre></div><h2 id=添加数据>添加数据</h2>
+<p><code>addAlbum</code> 函数：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#75715e>// addAlbum adds the specified album to the database, returning the album ID of
+</span><span style=color:#75715e>// the nuw entry
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>addAlbum</span><span style=color:#111>(</span><span style=color:#75af00>alb</span> <span style=color:#75af00>Album</span><span style=color:#111>)</span> <span style=color:#111>(</span><span style=color:#00a8c8>int64</span><span style=color:#111>,</span> <span style=color:#00a8c8>error</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#75af00>result</span><span style=color:#111>,</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>db</span><span style=color:#111>.</span><span style=color:#75af00>Exec</span><span style=color:#111>(</span><span style=color:#d88200>&#34;INSERT INTO album (title, artist, price) VALUES (?, ?, ?)&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>alb</span><span style=color:#111>.</span><span style=color:#75af00>Title</span><span style=color:#111>,</span> <span style=color:#75af00>alb</span><span style=color:#111>.</span><span style=color:#75af00>Artist</span><span style=color:#111>,</span> <span style=color:#75af00>alb</span><span style=color:#111>.</span><span style=color:#75af00>Price</span><span style=color:#111>)</span>
+	<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Errorf</span><span style=color:#111>(</span><span style=color:#d88200>&#34;addAlbum: %v&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>err</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+	<span style=color:#75af00>id</span><span style=color:#111>,</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>result</span><span style=color:#111>.</span><span style=color:#75af00>LastInsertId</span><span style=color:#111>()</span>
+	<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#00a8c8>return</span> <span style=color:#ae81ff>0</span><span style=color:#111>,</span> <span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Errorf</span><span style=color:#111>(</span><span style=color:#d88200>&#34;addAlbum: %v&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>err</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+	<span style=color:#00a8c8>return</span> <span style=color:#75af00>id</span><span style=color:#111>,</span> <span style=color:#00a8c8>nil</span>
+<span style=color:#111>}</span>
+</code></pre></div><ul>
+<li><code>db.Exec</code> 方法执行不返回数据的 SQL 语句。</li>
+<li><code>Result.LastInsertId</code> 方法返回插入数据库行的 ID。</li>
+</ul>
+<p><code>main</code> 函数添加：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>	<span style=color:#75af00>albID</span><span style=color:#111>,</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>addAlbum</span><span style=color:#111>(</span><span style=color:#75af00>Album</span><span style=color:#111>{</span>
+		<span style=color:#75af00>Title</span><span style=color:#111>:</span>  <span style=color:#d88200>&#34;The Modern Sound of Betty Carter&#34;</span><span style=color:#111>,</span>
+		<span style=color:#75af00>Artist</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Betty Carter&#34;</span><span style=color:#111>,</span>
+		<span style=color:#75af00>Price</span><span style=color:#111>:</span>  <span style=color:#ae81ff>49.99</span><span style=color:#111>,</span>
+	<span style=color:#111>})</span>
+	<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#75af00>log</span><span style=color:#111>.</span><span style=color:#75af00>Fatal</span><span style=color:#111>(</span><span style=color:#75af00>err</span><span style=color:#111>)</span>
+	<span style=color:#111>}</span>
+	<span style=color:#75af00>fmt</span><span style=color:#111>.</span><span style=color:#75af00>Printf</span><span style=color:#111>(</span><span style=color:#d88200>&#34;ID of added album: %v\n&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>albID</span><span style=color:#111>)</span>
+</code></pre></div><h2 id=教程使用-gin-开发-restful-api>教程：使用 Gin 开发 RESTful API</h2>
+<h3 id=创建数据>创建数据</h3>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#75af00>main</span>
+
+<span style=color:#75715e>// album represents data about a record album.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>type</span> <span style=color:#75af00>album</span> <span style=color:#00a8c8>struct</span> <span style=color:#111>{</span>
+	<span style=color:#75af00>ID</span>     <span style=color:#00a8c8>string</span>  <span style=color:#d88200>`json:&#34;id&#34;`</span>
+	<span style=color:#75af00>Title</span>  <span style=color:#00a8c8>string</span>  <span style=color:#d88200>`json:&#34;title&#34;`</span>
+	<span style=color:#75af00>Artist</span> <span style=color:#00a8c8>string</span>  <span style=color:#d88200>`json:&#34;artist&#34;`</span>
+	<span style=color:#75af00>Price</span>  <span style=color:#00a8c8>float64</span> <span style=color:#d88200>`json:&#34;price&#34;`</span>
+<span style=color:#111>}</span>
+
+<span style=color:#75715e>// albums slice to seed record album data.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>var</span> <span style=color:#75af00>albums</span> <span style=color:#111>=</span> <span style=color:#111>[]</span><span style=color:#75af00>album</span><span style=color:#111>{</span>
+	<span style=color:#111>{</span><span style=color:#75af00>ID</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;1&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Title</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Blue Train&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Artist</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;John Coltrane&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Price</span><span style=color:#111>:</span> <span style=color:#ae81ff>56.99</span><span style=color:#111>},</span>
+	<span style=color:#111>{</span><span style=color:#75af00>ID</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Title</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Jeru&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Artist</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Gerry Mulligan&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Price</span><span style=color:#111>:</span> <span style=color:#ae81ff>17.99</span><span style=color:#111>},</span>
+	<span style=color:#111>{</span><span style=color:#75af00>ID</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;3&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Title</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Sarah Vaughan and Clifford Brown&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Artist</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Sarah Vaughan&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Price</span><span style=color:#111>:</span> <span style=color:#ae81ff>39.99</span><span style=color:#111>},</span>
+<span style=color:#111>}</span>
+</code></pre></div><h3 id=返回所有数据>返回所有数据</h3>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>import</span> <span style=color:#111>(</span>
+	<span style=color:#d88200>&#34;net/http&#34;</span>
+
+	<span style=color:#d88200>&#34;github.com/gin-gonic/gin&#34;</span>
+<span style=color:#111>)</span>
+
+<span style=color:#75715e>// ...
+</span><span style=color:#75715e></span>
+<span style=color:#00a8c8>func</span> <span style=color:#75af00>main</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+
+	<span style=color:#75af00>router</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>gin</span><span style=color:#111>.</span><span style=color:#75af00>Default</span><span style=color:#111>()</span>
+	<span style=color:#75af00>router</span><span style=color:#111>.</span><span style=color:#75af00>GET</span><span style=color:#111>(</span><span style=color:#d88200>&#34;/albums&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>getAlbums</span><span style=color:#111>)</span>
+
+	<span style=color:#75af00>router</span><span style=color:#111>.</span><span style=color:#75af00>Run</span><span style=color:#111>(</span><span style=color:#d88200>&#34;localhost:8080&#34;</span><span style=color:#111>)</span>
+<span style=color:#111>}</span>
+
+<span style=color:#75715e>// getAlbums responds with the list of all albums as JSON.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>getAlbums</span><span style=color:#111>(</span><span style=color:#75af00>c</span> <span style=color:#f92672>*</span><span style=color:#75af00>gin</span><span style=color:#111>.</span><span style=color:#75af00>Context</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#75af00>c</span><span style=color:#111>.</span><span style=color:#75af00>IndentedJSON</span><span style=color:#111>(</span><span style=color:#75af00>http</span><span style=color:#111>.</span><span style=color:#75af00>StatusOK</span><span style=color:#111>,</span> <span style=color:#75af00>albums</span><span style=color:#111>)</span>
+<span style=color:#111>}</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>go get .
+
+go run .
+
+curl http://localhost:8080/albums
+</code></pre></div><h3 id=添加新项>添加新项</h3>
+<p>添加 <code>postAlbums</code> 函数：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#75715e>// postAlbums adds an album from JSON received in the request body.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>postAlbums</span><span style=color:#111>(</span><span style=color:#75af00>c</span> <span style=color:#f92672>*</span><span style=color:#75af00>gin</span><span style=color:#111>.</span><span style=color:#75af00>Context</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#00a8c8>var</span> <span style=color:#75af00>newAlbum</span> <span style=color:#75af00>album</span>
+
+	<span style=color:#75715e>// Call BindJSON to bind the received JSON to new Album.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>c</span><span style=color:#111>.</span><span style=color:#75af00>BindJSON</span><span style=color:#111>(</span><span style=color:#f92672>&amp;</span><span style=color:#75af00>newAlbum</span><span style=color:#111>);</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#00a8c8>return</span>
+	<span style=color:#111>}</span>
+
+	<span style=color:#75715e>// Add the new album to the slice.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>albums</span> <span style=color:#111>=</span> <span style=color:#111>append</span><span style=color:#111>(</span><span style=color:#75af00>albums</span><span style=color:#111>,</span> <span style=color:#75af00>newAlbum</span><span style=color:#111>)</span>
+	<span style=color:#75af00>c</span><span style=color:#111>.</span><span style=color:#75af00>IndentedJSON</span><span style=color:#111>(</span><span style=color:#75af00>http</span><span style=color:#111>.</span><span style=color:#75af00>StatusCreated</span><span style=color:#111>,</span> <span style=color:#75af00>newAlbum</span><span style=color:#111>)</span>
+<span style=color:#111>}</span>
+</code></pre></div><p><code>main</code> 函数添加：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#75af00>router</span><span style=color:#111>.</span><span style=color:#75af00>POST</span><span style=color:#111>(</span><span style=color:#d88200>&#34;/albums&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>postAlbums</span><span style=color:#111>)</span>
+</code></pre></div><div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>curl http://localhost:8080/albums <span style=color:#8045ff>\
+</span><span style=color:#8045ff></span>	--include <span style=color:#8045ff>\
+</span><span style=color:#8045ff></span>	--header <span style=color:#d88200>&#34;Content-Type: application/json&#34;</span> <span style=color:#8045ff>\
+</span><span style=color:#8045ff></span>	--request <span style=color:#d88200>&#34;POST&#34;</span> <span style=color:#8045ff>\
+</span><span style=color:#8045ff></span>	--data <span style=color:#d88200>&#39;{&#34;id&#34;: &#34;4&#34;,&#34;title&#34;: &#34;The Modern Sound of Betty Carter&#34;,&#34;artist&#34;: &#34;Betty Carter&#34;,&#34;price&#34;: 49.99}&#39;</span>
+
+curl http://localhost:8080/albums <span style=color:#8045ff>\
+</span><span style=color:#8045ff></span>	--header <span style=color:#d88200>&#34;Content-Type: application/json&#34;</span> <span style=color:#8045ff>\
+</span><span style=color:#8045ff></span>	--request <span style=color:#d88200>&#34;GET&#34;</span>
+</code></pre></div><h3 id=返回特定项>返回特定项</h3>
+<p><code>getAlbumByID</code> 函数：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#75715e>// getAlbumByID locates the album whose ID value matches the id parameter sent
+</span><span style=color:#75715e>// by the client, then returns that album as a response.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>getAlbumByID</span><span style=color:#111>(</span><span style=color:#75af00>c</span> <span style=color:#f92672>*</span><span style=color:#75af00>gin</span><span style=color:#111>.</span><span style=color:#75af00>Context</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#75af00>id</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>c</span><span style=color:#111>.</span><span style=color:#75af00>Param</span><span style=color:#111>(</span><span style=color:#d88200>&#34;id&#34;</span><span style=color:#111>)</span>
+
+	<span style=color:#75715e>// Loop over the list of albums, looking for an album whose ID value matches
+</span><span style=color:#75715e></span>	<span style=color:#75715e>// the parameter.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>for</span> <span style=color:#75af00>_</span><span style=color:#111>,</span> <span style=color:#75af00>a</span> <span style=color:#f92672>:=</span> <span style=color:#00a8c8>range</span> <span style=color:#75af00>albums</span> <span style=color:#111>{</span>
+		<span style=color:#00a8c8>if</span> <span style=color:#75af00>a</span><span style=color:#111>.</span><span style=color:#75af00>ID</span> <span style=color:#f92672>==</span> <span style=color:#75af00>id</span> <span style=color:#111>{</span>
+			<span style=color:#75af00>c</span><span style=color:#111>.</span><span style=color:#75af00>IndentedJSON</span><span style=color:#111>(</span><span style=color:#75af00>http</span><span style=color:#111>.</span><span style=color:#75af00>StatusOK</span><span style=color:#111>,</span> <span style=color:#75af00>a</span><span style=color:#111>)</span>
+			<span style=color:#00a8c8>return</span>
+		<span style=color:#111>}</span>
+	<span style=color:#111>}</span>
+	<span style=color:#75af00>c</span><span style=color:#111>.</span><span style=color:#75af00>IndentedJSON</span><span style=color:#111>(</span><span style=color:#75af00>http</span><span style=color:#111>.</span><span style=color:#75af00>StatusNotFound</span><span style=color:#111>,</span> <span style=color:#75af00>gin</span><span style=color:#111>.</span><span style=color:#75af00>H</span><span style=color:#111>{</span><span style=color:#d88200>&#34;message&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;album not found&#34;</span><span style=color:#111>})</span>
+<span style=color:#111>}</span>
+</code></pre></div><p><code>main</code> 添加：</p>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go>	<span style=color:#75af00>router</span><span style=color:#111>.</span><span style=color:#75af00>GET</span><span style=color:#111>(</span><span style=color:#d88200>&#34;/albums/:id&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>getAlbumByID</span><span style=color:#111>)</span>
+</code></pre></div><ul>
+<li><code>:id</code> Gin 中路径前面有冒号表示该项是路径参数。</li>
+</ul>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-bash data-lang=bash>curl http://localhost:8080/albums/2
+
+curl http://localhost:8080/albums/5
+</code></pre></div><h3 id=完整代码>完整代码</h3>
+<div class=highlight><pre tabindex=0 style=color:#272822;background-color:#fafafa;-moz-tab-size:4;-o-tab-size:4;tab-size:4><code class=language-go data-lang=go><span style=color:#f92672>package</span> <span style=color:#75af00>main</span>
+
+<span style=color:#f92672>import</span> <span style=color:#111>(</span>
+	<span style=color:#d88200>&#34;net/http&#34;</span>
+
+	<span style=color:#d88200>&#34;github.com/gin-gonic/gin&#34;</span>
+<span style=color:#111>)</span>
+
+<span style=color:#75715e>// album represents data about a record album.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>type</span> <span style=color:#75af00>album</span> <span style=color:#00a8c8>struct</span> <span style=color:#111>{</span>
+	<span style=color:#75af00>ID</span>     <span style=color:#00a8c8>string</span>  <span style=color:#d88200>`json:&#34;id&#34;`</span>
+	<span style=color:#75af00>Title</span>  <span style=color:#00a8c8>string</span>  <span style=color:#d88200>`json:&#34;title&#34;`</span>
+	<span style=color:#75af00>Artist</span> <span style=color:#00a8c8>string</span>  <span style=color:#d88200>`json:&#34;artist&#34;`</span>
+	<span style=color:#75af00>Price</span>  <span style=color:#00a8c8>float64</span> <span style=color:#d88200>`json:&#34;price&#34;`</span>
+<span style=color:#111>}</span>
+
+<span style=color:#75715e>// albums slice to seed record album data.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>var</span> <span style=color:#75af00>albums</span> <span style=color:#111>=</span> <span style=color:#111>[]</span><span style=color:#75af00>album</span><span style=color:#111>{</span>
+	<span style=color:#111>{</span><span style=color:#75af00>ID</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;1&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Title</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Blue Train&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Artist</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;John Coltrane&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Price</span><span style=color:#111>:</span> <span style=color:#ae81ff>56.99</span><span style=color:#111>},</span>
+	<span style=color:#111>{</span><span style=color:#75af00>ID</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;2&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Title</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Jeru&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Artist</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Gerry Mulligan&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Price</span><span style=color:#111>:</span> <span style=color:#ae81ff>17.99</span><span style=color:#111>},</span>
+	<span style=color:#111>{</span><span style=color:#75af00>ID</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;3&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Title</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Sarah Vaughan and Clifford Brown&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Artist</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;Sarah Vaughan&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>Price</span><span style=color:#111>:</span> <span style=color:#ae81ff>39.99</span><span style=color:#111>},</span>
+<span style=color:#111>}</span>
+
+<span style=color:#00a8c8>func</span> <span style=color:#75af00>main</span><span style=color:#111>()</span> <span style=color:#111>{</span>
+
+	<span style=color:#75af00>router</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>gin</span><span style=color:#111>.</span><span style=color:#75af00>Default</span><span style=color:#111>()</span>
+	<span style=color:#75af00>router</span><span style=color:#111>.</span><span style=color:#75af00>GET</span><span style=color:#111>(</span><span style=color:#d88200>&#34;/albums&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>getAlbums</span><span style=color:#111>)</span>
+	<span style=color:#75af00>router</span><span style=color:#111>.</span><span style=color:#75af00>GET</span><span style=color:#111>(</span><span style=color:#d88200>&#34;/albums/:id&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>getAlbumByID</span><span style=color:#111>)</span>
+	<span style=color:#75af00>router</span><span style=color:#111>.</span><span style=color:#75af00>POST</span><span style=color:#111>(</span><span style=color:#d88200>&#34;/albums&#34;</span><span style=color:#111>,</span> <span style=color:#75af00>postAlbums</span><span style=color:#111>)</span>
+
+	<span style=color:#75af00>router</span><span style=color:#111>.</span><span style=color:#75af00>Run</span><span style=color:#111>(</span><span style=color:#d88200>&#34;localhost:8080&#34;</span><span style=color:#111>)</span>
+<span style=color:#111>}</span>
+
+<span style=color:#75715e>// getAlbums responds with the list of all albums as JSON.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>getAlbums</span><span style=color:#111>(</span><span style=color:#75af00>c</span> <span style=color:#f92672>*</span><span style=color:#75af00>gin</span><span style=color:#111>.</span><span style=color:#75af00>Context</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#75af00>c</span><span style=color:#111>.</span><span style=color:#75af00>IndentedJSON</span><span style=color:#111>(</span><span style=color:#75af00>http</span><span style=color:#111>.</span><span style=color:#75af00>StatusOK</span><span style=color:#111>,</span> <span style=color:#75af00>albums</span><span style=color:#111>)</span>
+<span style=color:#111>}</span>
+
+<span style=color:#75715e>// postAlbums adds an album from JSON received in the request body.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>postAlbums</span><span style=color:#111>(</span><span style=color:#75af00>c</span> <span style=color:#f92672>*</span><span style=color:#75af00>gin</span><span style=color:#111>.</span><span style=color:#75af00>Context</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#00a8c8>var</span> <span style=color:#75af00>newAlbum</span> <span style=color:#75af00>album</span>
+
+	<span style=color:#75715e>// Call BindJSON to bind the received JSON to new Album.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>if</span> <span style=color:#75af00>err</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>c</span><span style=color:#111>.</span><span style=color:#75af00>BindJSON</span><span style=color:#111>(</span><span style=color:#f92672>&amp;</span><span style=color:#75af00>newAlbum</span><span style=color:#111>);</span> <span style=color:#75af00>err</span> <span style=color:#f92672>!=</span> <span style=color:#00a8c8>nil</span> <span style=color:#111>{</span>
+		<span style=color:#00a8c8>return</span>
+	<span style=color:#111>}</span>
+
+	<span style=color:#75715e>// Add the new album to the slice.
+</span><span style=color:#75715e></span>	<span style=color:#75af00>albums</span> <span style=color:#111>=</span> <span style=color:#111>append</span><span style=color:#111>(</span><span style=color:#75af00>albums</span><span style=color:#111>,</span> <span style=color:#75af00>newAlbum</span><span style=color:#111>)</span>
+	<span style=color:#75af00>c</span><span style=color:#111>.</span><span style=color:#75af00>IndentedJSON</span><span style=color:#111>(</span><span style=color:#75af00>http</span><span style=color:#111>.</span><span style=color:#75af00>StatusCreated</span><span style=color:#111>,</span> <span style=color:#75af00>newAlbum</span><span style=color:#111>)</span>
+<span style=color:#111>}</span>
+
+<span style=color:#75715e>// getAlbumByID locates the album whose ID value matches the id parameter sent
+</span><span style=color:#75715e>// by the client, then returns that album as a response.
+</span><span style=color:#75715e></span><span style=color:#00a8c8>func</span> <span style=color:#75af00>getAlbumByID</span><span style=color:#111>(</span><span style=color:#75af00>c</span> <span style=color:#f92672>*</span><span style=color:#75af00>gin</span><span style=color:#111>.</span><span style=color:#75af00>Context</span><span style=color:#111>)</span> <span style=color:#111>{</span>
+	<span style=color:#75af00>id</span> <span style=color:#f92672>:=</span> <span style=color:#75af00>c</span><span style=color:#111>.</span><span style=color:#75af00>Param</span><span style=color:#111>(</span><span style=color:#d88200>&#34;id&#34;</span><span style=color:#111>)</span>
+
+	<span style=color:#75715e>// Loop over the list of albums, looking for an album whose ID value matches
+</span><span style=color:#75715e></span>	<span style=color:#75715e>// the parameter.
+</span><span style=color:#75715e></span>	<span style=color:#00a8c8>for</span> <span style=color:#75af00>_</span><span style=color:#111>,</span> <span style=color:#75af00>a</span> <span style=color:#f92672>:=</span> <span style=color:#00a8c8>range</span> <span style=color:#75af00>albums</span> <span style=color:#111>{</span>
+		<span style=color:#00a8c8>if</span> <span style=color:#75af00>a</span><span style=color:#111>.</span><span style=color:#75af00>ID</span> <span style=color:#f92672>==</span> <span style=color:#75af00>id</span> <span style=color:#111>{</span>
+			<span style=color:#75af00>c</span><span style=color:#111>.</span><span style=color:#75af00>IndentedJSON</span><span style=color:#111>(</span><span style=color:#75af00>http</span><span style=color:#111>.</span><span style=color:#75af00>StatusOK</span><span style=color:#111>,</span> <span style=color:#75af00>a</span><span style=color:#111>)</span>
+			<span style=color:#00a8c8>return</span>
+		<span style=color:#111>}</span>
+	<span style=color:#111>}</span>
+	<span style=color:#75af00>c</span><span style=color:#111>.</span><span style=color:#75af00>IndentedJSON</span><span style=color:#111>(</span><span style=color:#75af00>http</span><span style=color:#111>.</span><span style=color:#75af00>StatusNotFound</span><span style=color:#111>,</span> <span style=color:#75af00>gin</span><span style=color:#111>.</span><span style=color:#75af00>H</span><span style=color:#111>{</span><span style=color:#d88200>&#34;message&#34;</span><span style=color:#111>:</span> <span style=color:#d88200>&#34;album not found&#34;</span><span style=color:#111>})</span>
+<span style=color:#111>}</span>
 </code></pre></div>
 <div class=row><div class="position-relative mx-auto col-lg-9">
 <div class="bg-primary overflow-hidden p-3 mt-5 shadow">
