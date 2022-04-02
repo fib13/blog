@@ -4,7 +4,7 @@ description = ""
 +++
 
 {{< lead >}}
-无他，惟手熟尔。
+折腾日记
 {{< /lead >}}
 
 ## 分类
@@ -13,14 +13,14 @@ description = ""
 	<div class="col-md-4">
 		<div class="card flex-row border-0">
 			<div class="mt-3">
-				<span class="fas fa-book-reader fa-2x text-primary"></span>
+				<span class="fa-brands fa-Linux fa-2x text-primary"></span>
 			</div>
 			<div class="card-body pl-2">
 				<h5 class="card-title">
-					学习笔记
+					Linux 折腾日记
 				</h5>
 				<p class="card-text text-muted">
-                    马上学不动了
+                    玩点不一样
 				</p>
 			</div>
 		</div>
